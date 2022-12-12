@@ -86,12 +86,12 @@
         "rules": {
             "no-empty": "off",
             "no-debugger": "off",
+            "default-case": "off",
             "no-unused-vars": "off",
             "semi": "warn",
             "curly": "warn",
             "eqeqeq": "warn",
             "no-new": "warn",
-            "eol-last": "warn",
             "no-div-regex": "warn",
             "dot-notation": "warn",
             "require-await": "warn",
@@ -124,6 +124,12 @@
                 4,
                 {
                     "SwitchCase": 1
+                }
+            ],
+            "import/no-anonymous-default-export": [
+                "warn",
+                {
+                    "allowObject": true
                 }
             ]
         }
