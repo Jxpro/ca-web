@@ -1,0 +1,10 @@
+.site-layout {
+    padding: 0 50px;
+}
+
+.site-layout .site-layout-background {
+    margin: 16px 0;
+    padding: 14px 24px;
+    min-height: 524px;
+    background-color: #fff;
+}
