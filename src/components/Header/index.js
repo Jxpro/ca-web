@@ -1,12 +1,19 @@
 import { useState } from 'react';
-import { Button, Layout, Menu } from 'antd';
-import { CheckCircleOutlined, WarningOutlined, SafetyCertificateOutlined, FormOutlined, EyeOutlined, FileProtectOutlined, QuestionCircleOutlined, UserOutlined, LoginOutlined } from '@ant-design/icons';
+import { Button, Layout, Menu, Modal, Checkbox, Form, Input, message } from 'antd';
+import { LoadingOutlined, LockOutlined, CheckCircleOutlined, WarningOutlined, SafetyCertificateOutlined, FormOutlined, EyeOutlined, FileProtectOutlined, QuestionCircleOutlined, UserOutlined, LoginOutlined } from '@ant-design/icons';
+import api from '../../api';
 import './index.css';
 
 function Header() {
-    // 下面需要获取用户信息
-    let userInfo = undefined;
-    // TODO: 从后端获取用户信息
+    // 获取用户信息
+    const [userInfo, setUserInfo] = useState(undefined);
+    // 从后端获取用户信息
+    // api.user.getUserInfo().then(res => {
+    //     setUserInfo(res);
+    // }, err => {
+    //     console.log(err);
+    // });
+
 
     // 导航项
     // 将true or false改为字符串形式，否则react会警告：Received `true` for a non-boolean attribute `show`.
@@ -62,6 +69,78 @@ function Header() {
         // TODO: 处理路由
     };
 
+    // 登录注册
+    // 提示框
+    const [messageApi, contextHolder] = message.useMessage();
+    // 控制登录还是注册
+    const [isLogin, setLoginMode] = useState(false);
+    // 控制登录或注册的跳转按钮
+    const [disableLogin, setDisableLogin] = useState(false);
+    const [disableRegister, setDisableRegister] = useState(false);
+    // 控制登录注册弹窗
+    const [openModal, setOpenModal] = useState(false);
+    const [confirmLoading, setConfirmLoading] = useState(false);
+    // 提交登录表单
+    const onFinishLogin = values => {
+        console.log('Received values of form: ', values);
+        setConfirmLoading(true);
+        setDisableRegister(true);
+        // api.user.login(values).then(res => {
+        //     console.log(res);
+        //     setConfirmLoading(false);
+        //     setOpenModal(false);
+        //     messageApi.open({
+        //         type: 'success',
+        //         content: '登录成功',
+        //     });
+        // }, err => {
+        //     console.log(err);
+        //     setConfirmLoading(false);
+        //     messageApi.open({
+        //         type: 'error',
+        //         content: '用户名或密码错误',
+        //     });
+        // });
+    };
+    // 提交注册表单
+    const onFinishRgister = values => {
+        console.log('Received values of form: ', values);
+        setConfirmLoading(true);
+        setDisableLogin(true);
+        // api.user.register(values).then(res => {
+        //     console.log(res);
+        //     setConfirmLoading(false);
+        //     setOpenModal(false);
+        //     messageApi.open({
+        //         type: 'success',
+        //         content: '注册成功',
+        //     });
+        // }, err => {
+        //     console.log(err);
+        //     setConfirmLoading(false);
+        //     messageApi.open({
+        //         type: 'error',
+        //         content: '注册失败',
+        //     });
+        // });
+    };
+    // 取消弹窗
+    const handleCancel = () => {
+        // 提交表单时，点击关闭按钮，不关闭弹窗
+        if (confirmLoading) { return; }
+        setOpenModal(false);
+    };
+    // 点击登录按钮
+    const onClickLogin = () => {
+        setLoginMode(true);
+        setOpenModal(true);
+    };
+    // 点击注册按钮
+    const onClickRegist = () => {
+        setLoginMode(false);
+        setOpenModal(true);
+    };
+
     return (
         <Layout.Header className="header">
             <div className="logo" >
@@ -75,9 +154,9 @@ function Header() {
                     <UserOutlined />
                     &nbsp;&nbsp;
                     {userInfo ? <span>userInfo.name</span> : <>
-                        <Button type="primary">登录</Button>
+                        <Button type="primary" onClick={onClickLogin}>登录</Button>
                         &nbsp;
-                        <Button >注册</Button>
+                        <Button onClick={onClickRegist}>注册</Button>
                     </>}
                 </div>
             </div>
@@ -89,6 +168,86 @@ function Header() {
                 defaultSelectedKeys={['certList']}
                 items={items.filter(item => item.show === 'true')}
             />
+            {/* 消息提示占位框 */}
+            {contextHolder}
+            <Modal
+                title={<div style={{ textAlign: 'center' }}>{isLogin ? '登录' : '注册'}</div>}
+                open={openModal}
+                confirmLoading={confirmLoading}
+                footer={null}
+                destroyOnClose={true}
+                onCancel={handleCancel}
+            >
+                <Form
+                    name="normal_login"
+                    className="login-form"
+                    onFinish={isLogin ? onFinishLogin : onFinishRgister}
+                >
+                    <Form.Item
+                        name="username"
+                        rules={[
+                            {
+                                required: true,
+                                message: '请输入用户名!',
+                            },
+                        ]}
+                    >
+                        <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Username" />
+                    </Form.Item>
+                    <Form.Item
+                        name="password"
+                        rules={[
+                            {
+                                required: true,
+                                message: '请输入密码!',
+                            },
+                        ]}
+                    >
+                        <Input.Password
+                            prefix={<LockOutlined className="site-form-item-icon" />}
+                            type="password"
+                            placeholder="Password"
+                        />
+                    </Form.Item>
+                    {!isLogin
+                        && <Form.Item
+                            name="confirm"
+                            dependencies={['password']}
+                            hasFeedback
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please confirm your password!',
+                                },
+                                ({ getFieldValue }) => ({
+                                    validator(_, value) {
+                                        if (!value || getFieldValue('password') === value) {
+                                            return Promise.resolve();
+                                        }
+                                        return Promise.reject(new Error('两次密码输入不一致!'));
+                                    },
+                                }),
+                            ]}
+                        >
+                            <Input.Password
+                                prefix={<LockOutlined className="site-form-item-icon" />}
+                                type="password"
+                                placeholder="Confirm"
+                            />
+                        </Form.Item>}
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit" className="login-form-button">
+                            {confirmLoading && <LoadingOutlined />} {isLogin ? '登录' : '注册'}
+                        </Button>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <Button className="login-form-button"
+                            onClick={isLogin ? onClickRegist : onClickLogin}
+                            disabled={isLogin ? disableRegister : disableLogin}>
+                            {isLogin ? '还没账号，去注册' : '已有账号，去登录'}
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </Modal>
         </Layout.Header>
     );
 }
