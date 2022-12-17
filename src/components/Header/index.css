@@ -1,0 +1,36 @@
+.header {
+    position: 'sticky';
+    top: 0;
+    z-index: 1;
+    width: '100%';
+}
+
+.logo {
+    position: relative;
+    float: left;
+    width: 120px;
+    height: 31px;
+    margin: 16px 24px 16px 0;
+}
+
+.logo .content {
+    position: absolute;
+    top: -53%;
+    font-size: 24px;
+    color: #fff;
+}
+
+.user-info {
+    position: relative;
+    float: right;
+    width: 180px;
+    height: 31px;
+    margin: 16px 0 16px 0;
+}
+
+.user-info .content {
+    position: absolute;
+    top: -53%;
+    font-size: 18px;
+    color: white;
+}
