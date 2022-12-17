@@ -42,6 +42,9 @@ axios.interceptors.request.use(
 // 响应拦截器
 axios.interceptors.response.use(
     response => {
+        // 如果响应数据中有token，则更新本地token
+        const token = response.headers.authorization;
+        token && localStorage.setItem('token', token);
         // 返回响应数据
         return response.data;
     },
