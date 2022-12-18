@@ -23,7 +23,7 @@
 .user-info {
     position: relative;
     float: right;
-    width: 180px;
+    width: 240px;
     height: 31px;
     margin: 16px 0 16px 0;
 }
@@ -31,6 +31,7 @@
 .user-info .content {
     position: absolute;
     top: -53%;
+    right: 0;
     font-size: 18px;
     color: white;
 }
