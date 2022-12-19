@@ -103,9 +103,7 @@ function Header(props) {
         {
             label:
                 // TODO: 处理联系方式
-                <a href="https://ant.design" target="_blank" rel="noopener noreferrer">
-                    联系我们
-                </a>
+                <a href="https://ant.design" target="_blank" rel="noopener noreferrer">联系我们</a>
             ,
             key: 'help',
             icon: <QuestionCircleOutlined />,
@@ -251,19 +249,20 @@ function Header(props) {
                     name="normal_login"
                     className="login-form"
                     onFinish={isLogin ? onLogin : onRgister}
-                >{!isLogin
-                    && <Form.Item
-                        name="nickname"
-                        rules={[
-                            {
-                                required: true,
-                                message: '请输入昵称!',
-                            },
-                        ]}
-                    >
-                        <Input prefix={<IdcardOutlined className="site-form-item-icon" />}
-                            placeholder="Nickname" />
-                    </Form.Item>
+                >
+                    {!isLogin
+                        && <Form.Item
+                            name="nickname"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: '请输入昵称!',
+                                },
+                            ]}
+                        >
+                            <Input prefix={<IdcardOutlined className="site-form-item-icon" />}
+                                placeholder="Nickname" />
+                        </Form.Item>
                     }
                     <Form.Item
                         name="username"
