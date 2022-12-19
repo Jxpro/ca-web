@@ -1,37 +1,15 @@
 .header {
-    position: 'sticky';
-    top: 0;
-    z-index: 1;
-    width: '100%';
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .logo {
-    position: relative;
-    float: left;
-    width: 120px;
-    height: 31px;
-    margin: 16px 24px 16px 0;
-}
-
-.logo .content {
-    position: absolute;
-    top: -53%;
     font-size: 24px;
     color: #fff;
 }
 
 .user-info {
-    position: relative;
-    float: right;
-    width: 240px;
-    height: 31px;
-    margin: 16px 0 16px 0;
-}
-
-.user-info .content {
-    position: absolute;
-    top: -53%;
-    right: 0;
     font-size: 18px;
-    color: white;
+    color: #fff;
 }

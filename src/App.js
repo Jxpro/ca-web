@@ -9,8 +9,8 @@ function App() {
     return (
         <Layout>
             <Header />
-            <Layout.Content className="site-layout">
-                <div className="site-layout-background">
+            <Layout.Content className="content-layout">
+                <div className="content-background">
                     Content
                 </div>
             </Layout.Content>

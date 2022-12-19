@@ -48,7 +48,7 @@ function Header() {
         // }, err => {
         //     return undefined;
         // });
-        return { name: 'admmmmmmmmmmmmm', role: 'admin' };
+        return { name: 'admin', role: 'admin' };
     });
 
     // 导航项
@@ -178,10 +178,10 @@ function Header() {
     const handleCancel = () => {
         // 提交表单时，点击关闭按钮不关闭弹窗，提示稍等
         if (confirmLoading) {
-            // message.loading({
-            //     content: '正在请求中，请稍等！',
-            //     key: messageKey,
-            // });
+            message.loading({
+                content: '正在请求中，请稍等！',
+                key: messageKey,
+            });
             return;
         }
         setOpenModal(false);
@@ -199,26 +199,9 @@ function Header() {
 
     return (
         <Layout.Header className="header">
-            <div className="logo" >
-                <div className="content">
-                    <SafetyCertificateOutlined />&nbsp;
-                    <span>CA系统</span>
-                </div>
-            </div>
-            <div className="user-info" >
-                <div className="content">
-                    <UserOutlined />
-                    &nbsp;&nbsp;
-                    {userInfo
-                        ? <>
-                            <span>{getShortName(userInfo.name)}</span>&nbsp;&nbsp;
-                            <Button type="primary" danger onClick={onLogout}>登出</Button>
-                        </>
-                        : <>
-                            <Button type="primary" onClick={onClickLogin}>登录</Button>&nbsp;&nbsp;
-                            <Button onClick={onClickRegist}>注册</Button>
-                        </>}
-                </div>
+            <div className="logo">
+                <SafetyCertificateOutlined />&nbsp;
+                <span>CA系统</span>
             </div>
             <Menu
                 theme="dark"
@@ -228,6 +211,19 @@ function Header() {
                 defaultSelectedKeys={['certList']}
                 items={items.filter(item => item.show === 'true')}
             />
+            <div className="user-info">
+                <UserOutlined />
+                &nbsp;&nbsp;
+                {userInfo
+                    ? <>
+                        <span>{getShortName(userInfo.name)}</span>&nbsp;&nbsp;
+                        <Button type="primary" danger onClick={onLogout}>登出</Button>
+                    </>
+                    : <>
+                        <Button type="primary" onClick={onClickLogin}>登录</Button>&nbsp;&nbsp;
+                        <Button onClick={onClickRegist}>注册</Button>
+                    </>}
+            </div>
             <Modal
                 title={<div style={{ textAlign: 'center' }}>{isLogin ? '登录' : '注册'}</div>}
                 open={openModal}

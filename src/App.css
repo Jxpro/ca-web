@@ -1,8 +1,8 @@
-.site-layout {
+.content-layout {
     padding: 0 50px;
 }
 
-.site-layout .site-layout-background {
+.content-background {
     margin: 16px 0;
     padding: 14px 24px;
     min-height: 543px;
