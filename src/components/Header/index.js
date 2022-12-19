@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Button, Layout, Menu, Modal, Form, Input, message } from 'antd';
 import { IdcardOutlined, LoadingOutlined, LockOutlined, CheckCircleOutlined, WarningOutlined, SafetyCertificateOutlined, FormOutlined, EyeOutlined, FileProtectOutlined, QuestionCircleOutlined, UserOutlined } from '@ant-design/icons';
+
 import api from '../../api';
 import './index.css';
 
@@ -28,6 +29,7 @@ function getShortName(name) {
 }
 
 function Header() {
+    console.log('render Header');
     // 从后端获取用户信息，useRef防止重复请求，function(){...}()是为了立即执行函数
     // deprecated: 由于useRef传入立即执行的函数，还是会导致每次渲染都会执行函数，因此改为useState
     // let userInfo = useRef(function () {
@@ -322,4 +324,4 @@ function Header() {
     );
 }
 
-export default Header;
+export default React.memo(Header);
