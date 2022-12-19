@@ -9,7 +9,8 @@ axios.defaults.timeout = 10000;
 
 // 跨域请求时是否需要使用凭证
 // TODO: 测试withCredentials效果
-axios.defaults.withCredentials = true;
+// 配置了withCredentials，后端Access-Control-Allow-Origin不能为*，必须指定具体的域名
+// axios.defaults.withCredentials = true;
 
 // post数据格式
 axios.defaults.headers.post['Content-Type'] = 'application/json';

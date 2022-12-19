@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Layout, Menu, Modal, Form, Input, message } from 'antd';
 import { IdcardOutlined, LoadingOutlined, LockOutlined, CheckCircleOutlined, WarningOutlined, SafetyCertificateOutlined, FormOutlined, EyeOutlined, FileProtectOutlined, QuestionCircleOutlined, UserOutlined } from '@ant-design/icons';
 
@@ -28,8 +28,7 @@ function getShortName(name) {
     return shortName;
 }
 
-function Header() {
-    console.log('render Header');
+function Header(props) {
     // 从后端获取用户信息，useRef防止重复请求，function(){...}()是为了立即执行函数
     // deprecated: 由于useRef传入立即执行的函数，还是会导致每次渲染都会执行函数，因此改为useState
     // let userInfo = useRef(function () {
@@ -41,15 +40,27 @@ function Header() {
     //     console.log('get user info');
     //     return undefined;
     // }());
-    const [userInfo, setUerInfo] = useState(() => {
-        console.log('get user info');
-        // api.user.getUserInfo().then(res => {
-        //     return res;
-        // }, err => {
-        //     return undefined;
-        // });
-        return { name: 'admin', role: 'admin' };
-    });
+    // deprecated: StrictMode模式下，无法真正延迟显示内容，避免页面闪烁，原因未知
+    // const [userInfo, setUerInfo] = useState(() => {
+    //     api.user.getUserInfo().then(res => {
+    //         setUerInfo(res);
+    //         props.over();
+    //     }, () => {
+    //         setUerInfo(undefined);
+    //         props.over();
+    //     });
+    // });
+    const [userInfo, setUerInfo] = useState(undefined);
+    // StrictMode模式下，只能用useEffect才能真正延迟显示内容，避免页面闪烁
+    useEffect(() => {
+        api.user.getUserInfo().then(res => {
+            setUerInfo(res);
+            props.over();
+        }, err => {
+            setUerInfo(undefined);
+            props.over();
+        });
+    }, [props]);
 
     // 导航项
     // 将true or false改为字符串形式，否则react会警告：Received `true` for a non-boolean attribute `show`.
@@ -117,23 +128,23 @@ function Header() {
     const onLogin = values => {
         console.log('Received values of form: ', values);
         setConfirmLoading(true);
-        // api.user.login(values).then(res => {
-        //     console.log(res);
-        //     setUerInfo(res);
-        //     setConfirmLoading(false);
-        //     setOpenModal(false);
-        //     message.success({
-        //         content: '登录成功',
-        //         key: messageKey,
-        //     });
-        // }, err => {
-        //     console.log(err);
-        //     setConfirmLoading(false);
-        //     message.error({
-        //         content: '用户名或密码错误',
-        //         key: messageKey,
-        //     });
-        // });
+        api.user.login(values).then(res => {
+            console.log(res);
+            setUerInfo(res);
+            setConfirmLoading(false);
+            setOpenModal(false);
+            message.success({
+                content: '登录成功',
+                key: messageKey,
+            });
+        }, err => {
+            console.log(err);
+            setConfirmLoading(false);
+            message.error({
+                content: '用户名或密码错误',
+                key: messageKey,
+            });
+        });
     };
     // 提交注册表单
     const onRgister = values => {
