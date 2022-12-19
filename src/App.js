@@ -7,7 +7,7 @@ import './App.css';
 function App() {
     console.log('render App');
     return (
-        <Layout>
+        <Layout className="site-layout">
             <Header />
             <Layout.Content className="content-layout">
                 <div className="content-background">
