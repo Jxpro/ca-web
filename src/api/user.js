@@ -7,19 +7,17 @@ const api_prefix = '/user';
 export default {
     // 登录
     login(data) {
-        const { password } = data;
         return http.post(api_prefix + '/login', {
             ...data,
-            password: sha256(password),
+            password: sha256(data.password),
         });
     },
     // 注册
     register(data) {
         delete data.confirm;
-        const { password } = data;
         return http.post(api_prefix + '/register', {
             ...data,
-            password: sha256(password),
+            password: sha256(data.password),
         });
     },
     // 退出登录

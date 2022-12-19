@@ -28,7 +28,7 @@ function getShortName(name) {
 }
 
 function Header() {
-    // 从后端获取用户信息, useRef防止重复请求, function(){...}()是为了立即执行函数
+    // 从后端获取用户信息，useRef防止重复请求，function(){...}()是为了立即执行函数
     // deprecated: 由于useRef传入立即执行的函数，还是会导致每次渲染都会执行函数，因此改为useState
     // let userInfo = useRef(function () {
     //     // api.user.getUserInfo().then(res => {
@@ -40,12 +40,12 @@ function Header() {
     //     return undefined;
     // }());
     const [userInfo, setUerInfo] = useState(() => {
+        console.log('get user info');
         // api.user.getUserInfo().then(res => {
         //     return res;
         // }, err => {
         //     return undefined;
         // });
-        console.log('get user info');
         return { name: 'admmmmmmmmmmmmm', role: 'admin' };
     });
 
@@ -104,8 +104,8 @@ function Header() {
     };
 
     // 登录注册
-    // 提示框
-    const [messageApi, contextHolder] = message.useMessage();
+    // 消息提示框key
+    const messageKey = 'message';
     // 控制登录还是注册
     const [isLogin, setLoginMode] = useState(false);
     // 控制登录注册弹窗
@@ -120,16 +120,16 @@ function Header() {
         //     setUerInfo(res);
         //     setConfirmLoading(false);
         //     setOpenModal(false);
-        //     messageApi.open({
-        //         type: 'success',
+        //     message.success({
         //         content: '登录成功',
+        //         key: messageKey,
         //     });
         // }, err => {
         //     console.log(err);
         //     setConfirmLoading(false);
-        //     messageApi.open({
-        //         type: 'error',
+        //     message.error({
         //         content: '用户名或密码错误',
+        //         key: messageKey,
         //     });
         // });
     };
@@ -142,16 +142,16 @@ function Header() {
         //     setUerInfo(res);
         //     setConfirmLoading(false);
         //     setOpenModal(false);
-        //     messageApi.open({
-        //         type: 'success',
+        //     message.success({
         //         content: '注册成功',
+        //         key: messageKey,
         //     });
         // }, err => {
         //     console.log(err);
         //     setConfirmLoading(false);
-        //     messageApi.open({
-        //         type: 'error',
+        //     message.error({
         //         content: '注册失败',
+        //         key: messageKey,
         //     });
         // });
     };
@@ -162,9 +162,9 @@ function Header() {
         // 重置用户信息
         setUerInfo(undefined);
         // 提示退出成功
-        messageApi.open({
-            type: 'success',
+        message.success({
             content: '退出成功',
+            key: messageKey,
         });
         // 发送退出请求，让后端删除token
         // 未删除的话也不影响，因为本地已无token，无法通过验证
@@ -174,8 +174,14 @@ function Header() {
     };
     // 取消弹窗
     const handleCancel = () => {
-        // 提交表单时，点击关闭按钮，不关闭弹窗
-        if (confirmLoading) { return; }
+        // 提交表单时，点击关闭按钮不关闭弹窗，提示稍等
+        if (confirmLoading) {
+            // message.loading({
+            //     content: '正在请求中，请稍等！',
+            //     key: messageKey,
+            // });
+            return;
+        }
         setOpenModal(false);
     };
     // 点击登录按钮
@@ -220,8 +226,6 @@ function Header() {
                 defaultSelectedKeys={['certList']}
                 items={items.filter(item => item.show === 'true')}
             />
-            {/* 消息提示占位框 */}
-            {contextHolder}
             <Modal
                 title={<div style={{ textAlign: 'center' }}>{isLogin ? '登录' : '注册'}</div>}
                 open={openModal}
