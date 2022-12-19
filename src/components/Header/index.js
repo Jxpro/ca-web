@@ -54,13 +54,18 @@ function Header(props) {
     // StrictMode模式下，只能用useEffect才能真正延迟显示内容，避免页面闪烁
     /* eslint-disable react-hooks/exhaustive-deps*/
     useEffect(() => {
-        api.user.getUserInfo().then(res => {
+        // 获取token
+        const token = localStorage.getItem('token');
+        // 如果token存在，则获取用户信息，然后显示页面
+        token && api.user.getUserInfo().then(res => {
             setUerInfo(res);
             props.over();
         }, err => {
             setUerInfo(undefined);
             props.over();
         });
+        // 如果token不存在，则直接显示页面
+        !token && props.over();
         // 这里暂时禁用eslint对useEffect的依赖检查，这里不影响
         // 后面可以采用redux来共享方法，可以避免使用props传递方法
     }, []);
