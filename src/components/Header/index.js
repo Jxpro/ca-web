@@ -101,12 +101,10 @@ function Header(props) {
             key: 'certCheck',
             icon: <EyeOutlined />,
             show: userInfo && userInfo.role === 'admin' ? 'true' : 'false',
-            // TODO: 需要判断用户是否为管理员
         },
         {
             label:
-                // TODO: 处理联系方式
-                <a href="https://ant.design" target="_blank" rel="noopener noreferrer">联系我们</a>
+                <a href="tencent://message/?uin=1529177144" target="_blank" rel="noopener noreferrer">联系我们</a>
             ,
             key: 'help',
             icon: <QuestionCircleOutlined />,
