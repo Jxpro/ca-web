@@ -52,6 +52,7 @@ function Header(props) {
     // });
     const [userInfo, setUerInfo] = useState(undefined);
     // StrictMode模式下，只能用useEffect才能真正延迟显示内容，避免页面闪烁
+    /* eslint-disable react-hooks/exhaustive-deps*/
     useEffect(() => {
         api.user.getUserInfo().then(res => {
             setUerInfo(res);
@@ -60,7 +61,10 @@ function Header(props) {
             setUerInfo(undefined);
             props.over();
         });
-    }, [props]);
+        // 这里暂时禁用eslint对useEffect的依赖检查，这里不影响
+        // 后面可以采用redux来共享方法，可以避免使用props传递方法
+    }, []);
+    /* eslint-enable react-hooks/exhaustive-deps*/
 
     // 导航项
     // 将true or false改为字符串形式，否则react会警告：Received `true` for a non-boolean attribute `show`.
