@@ -29,8 +29,6 @@ axios.interceptors.request.use(
         return config;
     },
     error => {
-        // 输出错误信息，仅供调试
-        // console.log(error);
         return Promise.reject(error);
     }
 );

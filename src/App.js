@@ -6,7 +6,6 @@ import Footer from './components/Footer';
 import './App.css';
 
 function App() {
-    console.log('render App');
     // 延迟显示内容，避免页面闪烁
     const [loading, setLoading] = useState('none');
     const over = () => setLoading('flex');

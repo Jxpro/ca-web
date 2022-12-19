@@ -37,7 +37,6 @@ function Header(props) {
     //     // }, err => {
     //     //     return undefined;
     //     // });
-    //     console.log('get user info');
     //     return undefined;
     // }());
     // deprecated: StrictMode模式下，无法真正延迟显示内容，避免页面闪烁，原因未知
@@ -60,8 +59,7 @@ function Header(props) {
         token && api.user.getUserInfo().then(res => {
             setUerInfo(res);
             props.over();
-        }, err => {
-            setUerInfo(undefined);
+        }, () => {
             props.over();
         });
         // 如果token不存在，则直接显示页面
@@ -133,51 +131,63 @@ function Header(props) {
     const [confirmLoading, setConfirmLoading] = useState(false);
     // 提交登录表单
     const onLogin = values => {
-        console.log('Received values of form: ', values);
         setConfirmLoading(true);
         api.user.login(values).then(res => {
-            console.log(res);
-            setUerInfo(res);
-            setConfirmLoading(false);
-            setOpenModal(false);
-            message.success({
-                content: '登录成功',
-                key: messageKey,
-            });
+            if (res.code === 200) {
+                setUerInfo(res);
+                setConfirmLoading(false);
+                setOpenModal(false);
+                message.success({
+                    content: '登录成功',
+                    key: messageKey,
+                });
+            } else {
+                setConfirmLoading(false);
+                message.error({
+                    content: '用户名或密码错误',
+                    key: messageKey,
+                });
+            }
         }, err => {
-            console.log(err);
             setConfirmLoading(false);
             message.error({
-                content: '用户名或密码错误',
+                // 暂时只处理网络错误，不考虑其他错误
+                content: '登录失败，请检查网络',
                 key: messageKey,
             });
         });
     };
     // 提交注册表单
     const onRgister = values => {
-        console.log('Received values of form: ', values);
         setConfirmLoading(true);
-        // api.user.register(values).then(res => {
-        //     console.log(res);
-        //     setUerInfo(res);
-        //     setConfirmLoading(false);
-        //     setOpenModal(false);
-        //     message.success({
-        //         content: '注册成功',
-        //         key: messageKey,
-        //     });
-        // }, err => {
-        //     console.log(err);
-        //     setConfirmLoading(false);
-        //     message.error({
-        //         content: '注册失败',
-        //         key: messageKey,
-        //     });
-        // });
+        api.user.register(values).then(res => {
+            if (res.code === 200) {
+                setUerInfo(res);
+                setConfirmLoading(false);
+                setOpenModal(false);
+                message.success({
+                    content: '注册成功',
+                    key: messageKey,
+                });
+            } else {
+                setConfirmLoading(false);
+                message.error({
+                    content: '用户名已存在',
+                    key: messageKey,
+                });
+            }
+        }, err => {
+            setConfirmLoading(false);
+            message.error({
+                content: '注册失败，请检查网络',
+                key: messageKey,
+            });
+        });
     };
     // 退出登录
     const onLogout = () => {
-        // 删除本地存储的token
+        // 删除本地存储的token，无需让后端删除token
+        // 因为本地已无token，后续请求将无法通过验证
         localStorage.removeItem('token');
         // 重置用户信息
         setUerInfo(undefined);
@@ -186,11 +196,6 @@ function Header(props) {
             content: '退出成功',
             key: messageKey,
         });
-        // 发送退出请求，让后端删除token
-        // 未删除的话也不影响，因为本地已无token，无法通过验证
-        // api.user.logout().then(res => {
-        //     console.log(res);
-        // });
     };
     // 取消弹窗
     const handleCancel = () => {

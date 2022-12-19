@@ -5,7 +5,6 @@ import './index.css';
 
 const Footer = () =>
     <Layout.Footer className="footer">
-        {console.log('render Footer')}
         Ant Design ©2022 Created by Joker Xin
     </Layout.Footer>;
 
