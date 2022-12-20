@@ -13,9 +13,9 @@ axios.defaults.timeout = 10000;
 // axios.defaults.withCredentials = true;
 
 // post数据格式
-axios.defaults.headers.post['Content-Type'] = 'application/json';
-// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-// axios.defaults.transformRequest = data => qs.stringify(data);
+// axios.defaults.headers.post['Content-Type'] = 'application/json';
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+axios.defaults.transformRequest = data => qs.stringify(data);
 // axios.defaults.transformResponse = data => qs.parse(data);
 
 // 请求拦截器
