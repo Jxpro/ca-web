@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Layout, Menu, Modal, Form, Input, message } from 'antd';
-import { IdcardOutlined, LoadingOutlined, LockOutlined, CheckCircleOutlined, WarningOutlined, SafetyCertificateOutlined, FormOutlined, EyeOutlined, FileProtectOutlined, QuestionCircleOutlined, UserOutlined } from '@ant-design/icons';
+import { MailOutlined, IdcardOutlined, LoadingOutlined, LockOutlined, CheckCircleOutlined, WarningOutlined, SafetyCertificateOutlined, FormOutlined, EyeOutlined, FileProtectOutlined, QuestionCircleOutlined, UserOutlined } from '@ant-design/icons';
 
 import api from '../../api';
 import './index.css';
@@ -259,18 +259,36 @@ function Header(props) {
                     onFinish={isLogin ? onLogin : onRgister}
                 >
                     {!isLogin
-                        && <Form.Item
-                            name="nickname"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: '请输入昵称!',
-                                },
-                            ]}
-                        >
-                            <Input prefix={<IdcardOutlined className="site-form-item-icon" />}
-                                placeholder="Nickname" />
-                        </Form.Item>
+                        && <>
+                            <Form.Item
+                                name="nickname"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: '请输入昵称!',
+                                    },
+                                ]}
+                            >
+                                <Input prefix={<IdcardOutlined className="site-form-item-icon" />}
+                                    placeholder="Nickname" autoComplete="off" />
+                            </Form.Item>
+                            <Form.Item
+                                name="email"
+                                rules={[
+                                    {
+                                        type: 'email',
+                                        message: '邮箱格式不正确！',
+                                    },
+                                    {
+                                        required: true,
+                                        message: '请输入邮箱!',
+                                    },
+                                ]}
+                            >
+                                <Input prefix={<MailOutlined className="site-form-item-icon" />}
+                                    placeholder="Email" autoComplete="off" />
+                            </Form.Item></>
+
                     }
                     <Form.Item
                         name="username"
@@ -282,7 +300,7 @@ function Header(props) {
                         ]}
                     >
                         <Input prefix={<UserOutlined className="site-form-item-icon" />}
-                            placeholder="Username" />
+                            placeholder="Username" autoComplete="off" />
                     </Form.Item>
                     <Form.Item
                         name="password"
