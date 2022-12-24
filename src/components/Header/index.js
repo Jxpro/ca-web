@@ -171,7 +171,6 @@ function Header(props) {
 
     // 导航项
     // 将true or false改为字符串形式，否则react会警告：Received `true` for a non-boolean attribute `show`.
-    const navigate = useNavigate();
     const items = [
         {
             label: '证书列表',
@@ -212,8 +211,28 @@ function Header(props) {
             show: 'true',
         },
     ];
+    // 需要登录的导航项
     const requireLoginItems = ['myCert', 'certApply', 'certApprove'];
-    const [currentNav, setCurrentNav] = useState('certList');
+    // 初始选中的导航项，根据当前路由来设置
+    let selectedKey = window.location.pathname.split('/')[1];
+    if (!selectedKey) {
+        // 如果当前路由是根路径，则默认选中第一个导航项
+        selectedKey = items[0].key;
+    } else {
+        // 如果当前路由不是根路径，则根据当前路由来设置选中的导航项
+        items.forEach(item => {
+            // 将当前路由与导航项的key均转为小写再比较，如果相同则选中该导航项
+            // 因为路由是忽略大小写的，但是导航项的key是区分大小写的，所以需要转换
+            if (item.key.toLowerCase() === window.location.pathname.split('/')[1].toLowerCase()) {
+                selectedKey = item.key;
+            }
+        });
+    }
+    // 设置当前选中的导航项
+    const [currentNav, setCurrentNav] = useState(selectedKey);
+    // 用于编程式导航的hook
+    const navigate = useNavigate();
+    //  点击导航项
     const onClickNav = e => {
         // 点击联系我们时不处理路由
         if (e.key === 'help') { return; }
@@ -244,7 +263,6 @@ function Header(props) {
                 mode="horizontal"
                 onClick={onClickNav}
                 selectedKeys={[currentNav]}
-                defaultSelectedKeys={['certList']}
                 items={items.filter(item => item.show === 'true')}
             />
             <div className="user-info">
