@@ -146,7 +146,7 @@ function Header(props) {
                     key: messageKey,
                 });
             }
-        }, err => {
+        }, () => {
             setConfirmLoading(false);
             message.error({
                 // 暂时只处理网络错误，不考虑其他错误
@@ -174,7 +174,7 @@ function Header(props) {
                     key: messageKey,
                 });
             }
-        }, err => {
+        }, () => {
             setConfirmLoading(false);
             message.error({
                 content: '注册失败，请检查网络',
