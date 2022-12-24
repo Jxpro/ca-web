@@ -21,37 +21,39 @@ const router = createBrowserRouter([
         children: [
             // 默认路由，根路径展示，第一页证书列表
             {
+                // path和index二选一，效果一样
+                // path: '',
                 index: true,
                 element: <CertList />,
             },
             // 证书列表，不带页码，默认为第一页
             {
-                path: 'certlist',
+                path: 'certList',
                 element: <CertList />,
             },
             // 证书列表，带页码
             {
-                path: 'certlist/:number',
+                path: 'certList/:number',
                 element: <CertList />,
             },
             // 撤销列表，不带页码，默认为第一页
             {
-                path: 'revokelist',
+                path: 'revokeList',
                 element: <RevokeList />,
             },
             // 撤销列表，带页码
             {
-                path: 'revokelist/:number',
+                path: 'revokeList/:number',
                 element: <RevokeList />,
             },
             // 我的证书
             {
-                path: 'mycert',
+                path: 'myCert',
                 element: <MyCert />,
             },
             // 证书申请
             {
-                path: 'certapply',
+                path: 'certApply',
                 element: <CertApply />,
                 children: [
                     // 证书申请，第一步，填写主体信息
@@ -73,7 +75,7 @@ const router = createBrowserRouter([
             },
             // 证书审批
             {
-                path: 'certapprove',
+                path: 'certApprove',
                 element: <CertApprove />,
             },
         ],

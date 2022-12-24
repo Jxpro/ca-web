@@ -4,7 +4,7 @@ import { MailOutlined, IdcardOutlined, LoadingOutlined, LockOutlined, CheckCircl
 
 import api from '../../api';
 import './index.css';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 // 接收一个中英文字符串，中文算2个字符，英文算1个字符
 // 最后返回一个长度为6个字符的字符串加上...，
@@ -69,56 +69,6 @@ function Header(props) {
         // 后面可以采用redux来共享方法，可以避免使用props传递方法
     }, []);
     /* eslint-enable react-hooks/exhaustive-deps*/
-
-    // 导航项
-    // 将true or false改为字符串形式，否则react会警告：Received `true` for a non-boolean attribute `show`.
-    const items = [
-        {
-            label: <Link to="/certlist/1">证书列表</Link>,
-            key: 'certList',
-            icon: <CheckCircleOutlined />,
-            show: 'true',
-        },
-        {
-            label: <Link to="/revokelist/2">撤销列表</Link>,
-            key: 'CRLs',
-            icon: <WarningOutlined />,
-            show: 'true',
-        },
-        {
-            label: <Link to="/mycert">我的证书</Link>,
-            key: 'myCert',
-            icon: <FileProtectOutlined />,
-            show: 'true',
-        },
-        {
-            label: <Link to="/certapply">证书申请</Link>,
-            key: 'certApply',
-            icon: <FormOutlined />,
-            show: 'true',
-        },
-        {
-            label: <Link to="/certapprove">证书审核</Link>,
-            key: 'certApprove',
-            icon: <EyeOutlined />,
-            show: userInfo && userInfo.role === 'admin' ? 'true' : 'false',
-        },
-        {
-            label:
-                <a href="tencent://message/?uin=1529177144" target="_blank" rel="noopener noreferrer">联系我们</a>
-            ,
-            key: 'help',
-            icon: <QuestionCircleOutlined />,
-            show: 'true',
-        },
-    ];
-    const [currentNav, setCurrentNav] = useState('certList');
-    const onClickNav = e => {
-        // 点击联系我们时不处理路由
-        if (e.key === 'help') { return; }
-        setCurrentNav(e.key);
-        // TODO: 处理路由
-    };
 
     // 登录注册
     // 消息提示框key
@@ -217,6 +167,69 @@ function Header(props) {
     const onClickRegist = () => {
         setLoginMode(false);
         setOpenModal(true);
+    };
+
+    // 导航项
+    // 将true or false改为字符串形式，否则react会警告：Received `true` for a non-boolean attribute `show`.
+    const navigate = useNavigate();
+    const items = [
+        {
+            label: '证书列表',
+            key: 'certList',
+            icon: <CheckCircleOutlined />,
+            show: 'true',
+        },
+        {
+            label: '撤销列表',
+            key: 'revokeList',
+            icon: <WarningOutlined />,
+            show: 'true',
+        },
+        {
+            label: '我的证书',
+            key: 'myCert',
+            icon: <FileProtectOutlined />,
+            show: 'true',
+        },
+        {
+            label: '证书申请',
+            key: 'certApply',
+            icon: <FormOutlined />,
+            show: 'true',
+        },
+        {
+            label: '证书审核',
+            key: 'certApprove',
+            icon: <EyeOutlined />,
+            show: userInfo && userInfo.role === 'admin' ? 'true' : 'false',
+        },
+        {
+            label:
+                <a href="tencent://message/?uin=1529177144" target="_blank" rel="noopener noreferrer">联系我们</a>
+            ,
+            key: 'help',
+            icon: <QuestionCircleOutlined />,
+            show: 'true',
+        },
+    ];
+    const requireLoginItems = ['myCert', 'certApply', 'certApprove'];
+    const [currentNav, setCurrentNav] = useState('certList');
+    const onClickNav = e => {
+        // 点击联系我们时不处理路由
+        if (e.key === 'help') { return; }
+        // 如果点击的是需要登录的导航项，且用户未登录，则弹出登录窗口
+        if (requireLoginItems.includes(e.key) && !userInfo) {
+            onClickLogin();
+            message.info({
+                content: '请先登录',
+                key: messageKey,
+            });
+        }
+        // 如果点击的是不需要登录的导航项，或者用户已登录，则跳转到对应页面
+        if (!requireLoginItems.includes(e.key) || userInfo) {
+            navigate(`/${e.key}`);
+            setCurrentNav(e.key);
+        }
     };
 
     return (
