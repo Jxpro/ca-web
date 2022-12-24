@@ -57,11 +57,8 @@ axios.interceptors.response.use(
                     // TODD: 未登录处理
                     break;
                 case 403:
-                    // TODD: Token过期处理
+                    // Token过期处理
                     localStorage.removeItem('token');
-                    break;
-                case 404:
-                    // TODD: 页面丢失处理
                     break;
             }
             return Promise.reject(error);
