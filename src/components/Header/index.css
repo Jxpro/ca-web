@@ -9,6 +9,11 @@
     color: #fff;
 }
 
+.navList {
+    flex-grow: 1;
+    justify-content: center;
+}
+
 .user-info {
     font-size: 18px;
     color: #fff;

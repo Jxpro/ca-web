@@ -225,6 +225,7 @@ function Header(props) {
                 <span>CA系统</span>
             </div>
             <Menu
+                className="navList"
                 theme="dark"
                 mode="horizontal"
                 onClick={onClickNav}
