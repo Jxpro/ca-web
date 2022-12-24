@@ -1,28 +1,22 @@
-import { lazy, Suspense } from 'react';
 import {
     createBrowserRouter,
 } from 'react-router-dom';
 
-const App = lazy(() => import('../App'));
-const Error = lazy(() => import('./error'));
-const CertList = lazy(() => import('../pages/CertList'));
-const RevokeList = lazy(() => import('../pages/RevokeList'));
-const MyCert = lazy(() => import('../pages/MyCert'));
-const CertApply = lazy(() => import('../pages/CertApply'));
-const Subject = lazy(() => import('../pages/CertApply/Subject'));
-const License = lazy(() => import('../pages/CertApply/License'));
-const PubKey = lazy(() => import('../pages/CertApply/PubKey'));
-const CertApprove = lazy(() => import('../pages/CertApprove'));
-
+import App from '../App';
+import Error from './error';
+import CertList from '../pages/CertList';
+import RevokeList from '../pages/RevokeList';
+import MyCert from '../pages/MyCert';
+import CertApply from '../pages/CertApply';
+import CertApprove from '../pages/CertApprove';
+import Subject from '../pages/CertApply/Subject';
+import License from '../pages/CertApply/License';
+import PubKey from '../pages/CertApply/PubKey';
 
 const router = createBrowserRouter([
     {
         path: '/',
-        element:
-            <Suspense fallback={<div>Loading...</div>}>
-                <App />
-            </Suspense>
-        ,
+        element: <App />,
         errorElement: <Error />,
         children: [
             // 默认路由，根路径展示，第一页证书列表
