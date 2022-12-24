@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Outlet } from 'react-router-dom';
 import { Layout } from 'antd';
 
 import Header from './components/Header';
@@ -16,7 +17,7 @@ function App() {
             <Header over={over} />
             <Layout.Content className="content-layout">
                 <div className="content-background">
-                    Content
+                    <Outlet />
                 </div>
             </Layout.Content>
             <Footer />

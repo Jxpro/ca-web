@@ -4,6 +4,7 @@ import { MailOutlined, IdcardOutlined, LoadingOutlined, LockOutlined, CheckCircl
 
 import api from '../../api';
 import './index.css';
+import { Link } from 'react-router-dom';
 
 // 接收一个中英文字符串，中文算2个字符，英文算1个字符
 // 最后返回一个长度为6个字符的字符串加上...，
@@ -73,32 +74,32 @@ function Header(props) {
     // 将true or false改为字符串形式，否则react会警告：Received `true` for a non-boolean attribute `show`.
     const items = [
         {
-            label: '证书列表',
+            label: <Link to="/certlist/1">证书列表</Link>,
             key: 'certList',
             icon: <CheckCircleOutlined />,
             show: 'true',
         },
         {
-            label: '撤销列表',
+            label: <Link to="/revokelist/2">撤销列表</Link>,
             key: 'CRLs',
             icon: <WarningOutlined />,
             show: 'true',
         },
         {
-            label: '我的证书',
+            label: <Link to="/mycert">我的证书</Link>,
             key: 'myCert',
             icon: <FileProtectOutlined />,
             show: 'true',
         },
         {
-            label: '证书申请',
+            label: <Link to="/certapply">证书申请</Link>,
             key: 'certApply',
             icon: <FormOutlined />,
             show: 'true',
         },
         {
-            label: '证书审核',
-            key: 'certCheck',
+            label: <Link to="/certapprove">证书审核</Link>,
+            key: 'certApprove',
             icon: <EyeOutlined />,
             show: userInfo && userInfo.role === 'admin' ? 'true' : 'false',
         },
