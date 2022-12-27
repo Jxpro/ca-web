@@ -53,15 +53,15 @@ const router = createBrowserRouter([
                         path: 'subject',
                         element: <Subject />,
                     },
-                    // 证书申请，第二步，填写营业执照
-                    {
-                        path: 'license',
-                        element: <License />,
-                    },
-                    // 证书申请，第三步，填写公钥信息
+                    // 证书申请，第二步，填写公钥信息
                     {
                         path: 'pubkey',
                         element: <PubKey />,
+                    },
+                    // 证书申请，第三步，填写营业执照
+                    {
+                        path: 'license',
+                        element: <License />,
                     },
                 ],
             },
