@@ -5,10 +5,7 @@ import {
 import App from '../App';
 import Error from './error';
 import CertList from '../pages/CertList';
-import RevokeList from '../pages/RevokeList';
-import MyCert from '../pages/MyCert';
 import CertApply from '../pages/CertApply';
-import CertApprove from '../pages/CertApprove';
 import Subject from '../pages/CertApply/Subject';
 import License from '../pages/CertApply/License';
 import PubKey from '../pages/CertApply/PubKey';
@@ -19,7 +16,7 @@ const router = createBrowserRouter([
         element: <App />,
         errorElement: <Error />,
         children: [
-            // 默认路由，根路径展示，第一页证书列表
+            // 默认路由，根路径默认展示第一页有效证书列表
             {
                 // path和index二选一，效果一样
                 // path: '',
@@ -27,29 +24,19 @@ const router = createBrowserRouter([
                 element: <CertList />,
             },
             // 证书列表，不带页码，默认为第一页
+            // state 为证书状态，可选值为：
+            // 1. valid(已通过)
+            // 2. revoke(已撤销)
+            // 3. unapproved(待审核)
+            // 4. user(用户所属)
             {
-                path: 'certList',
+                path: 'list/:state',
                 element: <CertList />,
             },
             // 证书列表，带页码
             {
-                path: 'certList/:number',
+                path: 'list/:state/:number',
                 element: <CertList />,
-            },
-            // 撤销列表，不带页码，默认为第一页
-            {
-                path: 'revokeList',
-                element: <RevokeList />,
-            },
-            // 撤销列表，带页码
-            {
-                path: 'revokeList/:number',
-                element: <RevokeList />,
-            },
-            // 我的证书
-            {
-                path: 'myCert',
-                element: <MyCert />,
             },
             // 证书申请
             {
@@ -72,11 +59,6 @@ const router = createBrowserRouter([
                         element: <PubKey />,
                     },
                 ],
-            },
-            // 证书审批
-            {
-                path: 'certApprove',
-                element: <CertApprove />,
             },
         ],
     },

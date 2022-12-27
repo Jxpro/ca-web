@@ -3,7 +3,9 @@
  */
 
 import user from './user';
+import cert from './cert';
 
 export default {
     user,
+    cert,
 };
