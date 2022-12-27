@@ -9,4 +9,7 @@ export default {
     downloadCert(requestId) {
         return http.get(`${api_prefix}/cert/${requestId}`, { responseType: 'blob' });
     },
+    downloadLicense(contentHash) {
+        return http.get(`${api_prefix}/license/${contentHash}`, { responseType: 'blob' });
+    },
 };
