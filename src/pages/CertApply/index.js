@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import { Outlet } from 'react-router-dom';
+import Step from '../../components/Step';
 
 function CertApply() {
     return (
         <div>
-            <h1>CertApply</h1>
+            <Step />
+            <Outlet />
         </div>
     );
 }

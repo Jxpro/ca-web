@@ -1,5 +1,5 @@
 import {
-    createBrowserRouter,
+    createBrowserRouter, Navigate,
 } from 'react-router-dom';
 
 import App from '../App';
@@ -43,6 +43,11 @@ const router = createBrowserRouter([
                 path: 'certApply',
                 element: <CertApply />,
                 children: [
+                    // 默认重定向到第一步
+                    {
+                        path: '',
+                        element: <Navigate to="subject" />,
+                    },
                     // 证书申请，第一步，填写主体信息
                     {
                         path: 'subject',
