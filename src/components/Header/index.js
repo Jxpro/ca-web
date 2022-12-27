@@ -204,7 +204,7 @@ function Header(props) {
         },
         {
             label:
-                <a href="tencent://message/?uin=1529177144" target="_blank" rel="noopener noreferrer">联系我们</a>
+                <a href="tencent://message/?uin=1529177144" rel="noopener noreferrer">联系我们</a>
             ,
             key: 'help',
             icon: <QuestionCircleOutlined />,
