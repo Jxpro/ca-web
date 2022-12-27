@@ -4,8 +4,10 @@
 
 import user from './user';
 import cert from './cert';
+import file from './file';
 
 export default {
     user,
     cert,
+    file,
 };

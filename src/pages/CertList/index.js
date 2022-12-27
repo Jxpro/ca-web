@@ -24,6 +24,23 @@ function CertList() {
                 setData(res);
             });
     }, [state]);
+    const requestDetail = request => {
+        return () => {
+            console.log(request);
+        };
+    };
+    const downloadCert = request => {
+        return () => {
+            api.file.downloadCert(request.requestId).then(res => {
+                util.download(res, `${request.commonName}_${request.serialNumber}.crt`, 'application/x-x509-user-cert');
+            });
+        };
+    };
+    const downloadCRL = () => {
+        api.file.downloadCRL().then(res => {
+            util.download(res, `CRL_${new Date().toLocaleDateString()}.crl`, 'application/pkix-crl');
+        });
+    };
     return (
         <List
             itemLayout="vertical"
@@ -32,7 +49,22 @@ function CertList() {
                 defaultCurrent: parseInt(number) || 1,
                 pageSize: 3,
                 showQuickJumper: true,
-                showTotal: total => `共 ${total} 条记录`
+                showTotal: total =>
+                    <>
+                        共 {total} 条记录
+                        {state === 'revoke'
+                            && <>
+                                &nbsp;&nbsp;&nbsp;
+                                <Button type="primary"
+                                    shape="round"
+                                    icon={<DownloadOutlined />}
+                                    size={'small'}
+                                    onClick={downloadCRL}>
+                                    下载CRL
+                                </Button>
+                            </>
+                        }
+                    </>
                 ,
             }}
             dataSource={data}
@@ -43,13 +75,15 @@ function CertList() {
                             <div style={{ pointerEvents: 'auto', marginTop: '82px' }}>
                                 <Button type="primary"
                                     shape="round"
-                                    icon={<DownloadOutlined />}>
+                                    icon={<DownloadOutlined />}
+                                    onClick={downloadCert(item)}>
                                     下载证书
                                 </Button>
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                 <Button type="default"
                                     shape="round"
-                                    icon={<EllipsisOutlined />}>
+                                    icon={<EllipsisOutlined />}
+                                    onClick={requestDetail(item)}>
                                     查看详情
                                 </Button>
                             </div>
