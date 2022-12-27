@@ -1,10 +1,8 @@
 import React from 'react';
 import { Layout } from 'antd';
 
-import './index.css';
-
 const Footer = () =>
-    <Layout.Footer className="footer">
+    <Layout.Footer style={{ textAlign: 'center' }}>
         Ant Design ©2022 Created by Joker Xin
     </Layout.Footer>;
 
