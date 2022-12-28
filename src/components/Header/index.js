@@ -91,55 +91,54 @@ function Header(props) {
     const onLogin = values => {
         setConfirmLoading(true);
         api.user.login(values).then(res => {
-            if (res.code === 200) {
-                setUerInfo(res);
-                setConfirmLoading(false);
-                setOpenModal(false);
-                message.success({
-                    content: '登录成功',
-                    key: messageKey,
-                });
-            } else {
+            setUerInfo(res);
+            setConfirmLoading(false);
+            setOpenModal(false);
+            message.success({
+                content: '登录成功',
+                key: messageKey,
+            });
+        }, error => {
+            if (error === 401) {
                 setConfirmLoading(false);
                 message.error({
                     content: '用户名或密码错误',
                     key: messageKey,
                 });
+            } else {
+                setConfirmLoading(false);
+                message.error({
+                    content: '登录失败，请检查网络',
+                    key: messageKey,
+                });
             }
-        }, () => {
-            setConfirmLoading(false);
-            message.error({
-                // 暂时只处理网络错误，不考虑其他错误
-                content: '登录失败，请检查网络',
-                key: messageKey,
-            });
         });
     };
     // 提交注册表单
     const onRgister = values => {
         setConfirmLoading(true);
         api.user.register(values).then(res => {
-            if (res.code === 200) {
-                setUerInfo(res);
+            setUerInfo(res);
+            setConfirmLoading(false);
+            setOpenModal(false);
+            message.success({
+                content: '注册成功',
+                key: messageKey,
+            });
+        }, error => {
+            if (error === 401) {
                 setConfirmLoading(false);
-                setOpenModal(false);
-                message.success({
-                    content: '注册成功',
+                message.error({
+                    content: '用户名已被注册',
                     key: messageKey,
                 });
             } else {
                 setConfirmLoading(false);
                 message.error({
-                    content: '用户名已存在',
+                    content: '注册失败，请检查网络',
                     key: messageKey,
                 });
             }
-        }, () => {
-            setConfirmLoading(false);
-            message.error({
-                content: '注册失败，请检查网络',
-                key: messageKey,
-            });
         });
     };
     // 退出登录

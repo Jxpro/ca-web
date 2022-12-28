@@ -39,37 +39,31 @@ axios.interceptors.request.use(
 // };
 
 // 响应拦截器
+// 服务器响应就算成功(200)，具体处理结果要看响应数据中的code(200,201,401,403)
+// 如果是文件流，则没有code，直接返回响应数据
 axios.interceptors.response.use(
     response => {
         // 如果响应数据中有token，则更新本地token
         const token = response.headers.authorization;
         token && localStorage.setItem('token', token);
-        // 返回响应数据
-        return response.data;
+        // 处理响应数据
+        const res = response.data;
+        switch (res.code) {
+            case undefined:
+                return res;
+            case 200:
+                return res.data;
+            case 201:
+                return true;
+            case 401:
+            case 403:
+                return Promise.reject(res.code);
+        }
     },
     error => {
-        let { response } = error;
-        if (response) {
-            // 服务器响应了
-            let { status } = response;
-            switch (status) {
-                case 401:
-                    // TODD: 未登录处理
-                    break;
-                case 403:
-                    // Token过期处理
-                    localStorage.removeItem('token');
-                    break;
-            }
-            return Promise.reject(error);
-        } else {
-            // 服务器未响应
-            if (!window.navigator.onLine) {
-                // TODD: 断网处理
-                return;
-            }
-            return Promise.reject(error);
-        }
+        // 断网或服务器错误
+        console.log(error);
+        return Promise.reject(error);
     }
 );
 
