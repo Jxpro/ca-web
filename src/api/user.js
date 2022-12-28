@@ -21,12 +21,8 @@ export default {
             password: sha256(data.password),
         });
     },
-    // 退出登录
-    logout() {
-        return http.post(api_prefix + '/logout');
-    },
     // 获取用户信息
-    getUserInfo() {
+    info() {
         return http.get(api_prefix + '/info');
     },
 };

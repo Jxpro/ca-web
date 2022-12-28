@@ -11,7 +11,7 @@ function Header(props) {
     // 从后端获取用户信息，useRef防止重复请求，function(){...}()是为了立即执行函数
     // deprecated: 由于useRef传入立即执行的函数，还是会导致每次渲染都会执行函数，因此改为useState
     // let userInfo = useRef(function () {
-    //     // api.user.getUserInfo().then(res => {
+    //     // api.user.info().then(res => {
     //     //     return res;
     //     // }, err => {
     //     //     return undefined;
@@ -20,7 +20,7 @@ function Header(props) {
     // }());
     // deprecated: StrictMode模式下，无法真正延迟显示内容，避免页面闪烁，原因未知
     // const [userInfo, setUerInfo] = useState(() => {
-    //     api.user.getUserInfo().then(res => {
+    //     api.user.info().then(res => {
     //         setUerInfo(res);
     //         props.over();
     //     }, () => {
@@ -35,7 +35,7 @@ function Header(props) {
         // 获取token
         const token = localStorage.getItem('token');
         // 如果token存在，则获取用户信息，然后显示页面
-        token && api.user.getUserInfo().then(res => {
+        token && api.user.info().then(res => {
             setUerInfo(res);
             props.over();
         }, () => {
