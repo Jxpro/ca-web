@@ -8,6 +8,10 @@ import util from '../../util';
 import './index.css';
 
 function Header(props) {
+    // 用于获取路由参数的hook
+    let { state } = useParams();
+    // 用于编程式路由的hook
+    const navigate = useNavigate();
     // 从后端获取用户信息，useRef防止重复请求，function(){...}()是为了立即执行函数
     // deprecated: 由于useRef传入立即执行的函数，还是会导致每次渲染都会执行函数，因此改为useState
     // let userInfo = useRef(function () {
@@ -31,6 +35,10 @@ function Header(props) {
     const [userInfo, setUerInfo] = useState(undefined);
     // StrictMode模式下，只能用useEffect才能真正延迟显示内容，避免页面闪烁
     /* eslint-disable react-hooks/exhaustive-deps*/
+    // 需要在useEffect中，等页面渲染完才能使用消息提示框(antd/message)
+    // 不然会有警告：
+    // Render methods should be a pure function of props and state;
+    // triggering nested component updates from render is not allowed.
     useEffect(() => {
         // 获取token
         const token = localStorage.getItem('token');
@@ -38,11 +46,34 @@ function Header(props) {
         token && api.user.info().then(res => {
             setUerInfo(res);
             props.over();
+            // 如果权限不足，则返回首页
+            if (state === 'unapproved' && res.role !== 'admin') {
+                message.info({
+                    content: '权限不足',
+                    key: messageKey,
+                });
+                navigate('/');
+            }
         }, () => {
+            // 如果获取用户信息失败，则直接显示页面
             props.over();
+            // 如果是需要登录的页面，则返回首页
+            if (state === ('user' || 'unapproved') || window.location.pathname.split('/')[1] === 'apply') {
+                navigate('/');
+            }
         });
-        // 如果token不存在，则直接显示页面
-        !token && props.over();
+        !token && (function () {
+            // 如果token不存在，则直接显示页面
+            props.over();
+            // 如果是需要登录的页面，则弹出登录框
+            if (state === ('user' || 'unapproved') || window.location.pathname.split('/')[1] === 'apply') {
+                onClickLogin();
+                message.info({
+                    content: '请先登录',
+                    key: messageKey,
+                });
+            }
+        }());
         // 这里暂时禁用eslint对useEffect的依赖检查，这里不影响
         // 后面可以采用redux来共享方法，可以避免使用props传递方法
     }, []);
@@ -197,27 +228,19 @@ function Header(props) {
     // 需要登录的导航项
     const requireLoginItems = [items[2].key, items[3].key, items[4].key];
     // 初始选中的导航项，根据当前路由来设置
-    let { state: selectedKey } = useParams();
+    let selectedKey = state;
     if (selectedKey) {
         // 如果是list下的路由，则可以直接拼接导航项的key
         selectedKey = 'list/' + selectedKey.toLocaleLowerCase();
-        if (!userInfo && requireLoginItems.includes(selectedKey) && openModal === false) {
-            onClickLogin();
-        }
     } else if (window.location.pathname.split('/')[1]) {
         // 如果当前路由不是根路径，也不是list子路径，则一定是items[4].key (apply)
         selectedKey = items[4].key;
-        if (!userInfo && openModal === false) {
-            onClickLogin();
-        }
     } else {
         // 否则就是根路径，选中证书列表
         selectedKey = items[0].key;
     }
     // 设置当前选中的导航项
     const [currentNav, setCurrentNav] = useState(selectedKey);
-    // 用于编程式路由的hook
-    const navigate = useNavigate();
     //  点击导航项
     const onClickNav = e => {
         // 点击联系我们时不处理路由
