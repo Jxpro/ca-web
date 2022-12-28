@@ -2,32 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Button, Layout, Menu, Modal, Form, Input, message } from 'antd';
 import { MailOutlined, IdcardOutlined, LoadingOutlined, LockOutlined, CheckCircleOutlined, WarningOutlined, SafetyCertificateOutlined, FormOutlined, EyeOutlined, FileProtectOutlined, QuestionCircleOutlined, UserOutlined } from '@ant-design/icons';
 
-import api from '../../api';
-import './index.css';
 import { useNavigate } from 'react-router-dom';
-
-// 接收一个中英文字符串，中文算2个字符，英文算1个字符
-// 最后返回一个长度为6个字符的字符串加上...，
-// 如果字符串长度小于6个字符则不加...
-function getShortName(name) {
-    let shortName = '';
-    let count = 0;
-    for (let i = 0; i < name.length; i++) {
-        if (name.charCodeAt(i) > 255) {
-            count += 2;
-        } else {
-            count += 1;
-        }
-        if (count > 6) {
-            break;
-        }
-        shortName += name[i];
-    }
-    if (count > 6) {
-        shortName += '...';
-    }
-    return shortName;
-}
+import api from '../../api';
+import util from '../../util';
+import './index.css';
 
 function Header(props) {
     // 从后端获取用户信息，useRef防止重复请求，function(){...}()是为了立即执行函数
@@ -274,7 +252,7 @@ function Header(props) {
                 &nbsp;&nbsp;
                 {userInfo
                     ? <>
-                        <span>{getShortName(userInfo.name)}</span>&nbsp;&nbsp;
+                        <span>{util.getShortString(userInfo.name)}</span>&nbsp;&nbsp;
                         <Button type="primary" danger onClick={onLogout}>登出</Button>
                     </>
                     : <>

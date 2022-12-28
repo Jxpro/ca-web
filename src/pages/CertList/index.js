@@ -175,8 +175,8 @@ function CertList() {
                     <Descriptions.Item label={presentRequest.algorithm === 'RSA' ? '密钥长度' : '曲线参数'}>
                         {presentRequest.algorithm === 'RSA' ? presentRequest.keySize : presentRequest.curveName}
                     </Descriptions.Item>
-                    <Descriptions.Item label="参数1">{presentRequest.param1}</Descriptions.Item>
-                    <Descriptions.Item label="参数2">{presentRequest.param2}</Descriptions.Item>
+                    <Descriptions.Item label="参数1">{presentRequest.param1 && util.getShortName(presentRequest.param1)}</Descriptions.Item>
+                    <Descriptions.Item label="参数2">{presentRequest.param2 && util.getShortName(presentRequest.param2)}</Descriptions.Item>
                     <Descriptions.Item label="Status">
                         {switchState(presentRequest)}
                     </Descriptions.Item>

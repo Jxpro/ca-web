@@ -1,4 +1,24 @@
 export default {
+    getShortString(name) {
+        let shortName = '';
+        let count = 0;
+        for (let i = 0; i < name.length; i++) {
+            if (name.charCodeAt(i) > 255) {
+                count += 2;
+            } else {
+                count += 1;
+            }
+            if (count > 6) {
+                break;
+            }
+            shortName += name[i];
+        }
+        if (count > 6) {
+            shortName += '...';
+        }
+        return shortName;
+    },
+
     transferDN(subject) {
         return 'CN=' + subject.commonName
             + ',O=' + subject.organization
