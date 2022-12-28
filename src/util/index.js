@@ -18,7 +18,6 @@ export default {
         }
         return shortName;
     },
-
     transferDN(subject) {
         return 'CN=' + subject.commonName
             + ',O=' + subject.organization
@@ -26,7 +25,6 @@ export default {
             + ',C=' + subject.countryName
             + ',ST=' + subject.provinceName;
     },
-
     flatObj(obj) {
         let result = {};
         for (let key in obj) {
@@ -38,7 +36,6 @@ export default {
         }
         return result;
     },
-
     download(data, filename, type) {
         let url = window.URL.createObjectURL(
             new Blob([data], { type: type })
