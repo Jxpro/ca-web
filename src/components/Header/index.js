@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Layout, Menu, Modal, Form, Input, message } from 'antd';
 import { MailOutlined, IdcardOutlined, LoadingOutlined, LockOutlined, CheckCircleOutlined, WarningOutlined, SafetyCertificateOutlined, FormOutlined, EyeOutlined, FileProtectOutlined, QuestionCircleOutlined, UserOutlined } from '@ant-design/icons';
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import api from '../../api';
 import util from '../../util';
 import './index.css';
@@ -170,7 +170,7 @@ function Header(props) {
         },
         {
             label: '证书申请',
-            key: 'certApply',
+            key: 'apply',
             icon: <FormOutlined />,
             show: 'true',
         },
@@ -192,23 +192,16 @@ function Header(props) {
     // 需要登录的导航项
     const requireLoginItems = ['list/user', 'certApply', 'list/unapproved'];
     // 初始选中的导航项，根据当前路由来设置
-    let selectedKey = window.location.pathname.split('/')[1];
-    if (!selectedKey) {
-        // 如果当前路由是根路径，则默认选中第一个导航项
-        selectedKey = items[0].key;
+    let { state: selectedKey } = useParams();
+    if (selectedKey) {
+        // 如果是list下的路由，则可以直接拼接导航项的key
+        selectedKey = 'list/' + selectedKey.toLocaleLowerCase();
+    } else if (window.location.pathname.split('/')[1]) {
+        // 如果当前路由不是根路径，也不是list子路径，则一定是apply
+        selectedKey = 'apply';
     } else {
-        // 如果当前路由不是根路径，则根据当前路由来设置选中的导航项
-        if (selectedKey === 'list') {
-            // 如果当前路由是list，则还需要下一层路径来设置选中的导航项
-            selectedKey = selectedKey + '/' + window.location.pathname.split('/')[2];
-        }
-        items.forEach(item => {
-            // 将当前路由与导航项的key均转为小写再比较，如果相同则选中该导航项
-            // 因为路由是忽略大小写的，但是导航项的key是区分大小写的，所以需要转换
-            if (item.key.toLowerCase() === selectedKey.toLowerCase()) {
-                selectedKey = item.key;
-            }
-        });
+        // 否则就是根路径，选中证书列表
+        selectedKey = 'list/valid';
     }
     // 设置当前选中的导航项
     const [currentNav, setCurrentNav] = useState(selectedKey);

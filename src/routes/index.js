@@ -40,7 +40,7 @@ const router = createBrowserRouter([
             },
             // 证书申请
             {
-                path: 'certApply',
+                path: 'apply',
                 element: <CertApply />,
                 children: [
                     // 默认重定向到第一步
