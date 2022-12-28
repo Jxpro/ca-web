@@ -36,6 +36,17 @@ export default {
         }
         return result;
     },
+    flatRes(res) {
+        return res.map((item, index) => {
+            item.requestId = item.request.id;
+            item.content = `证书主体：${this.transferDN(item.subject)}`;
+            item = this.flatObj(item);
+            item.title = `证书${index + 1}`;
+            item.description = `序列号：${item.serialNumber}，有效期：${new Date(item.notBefore).toLocaleString()} - ${new Date(item.notAfter).toLocaleString()}`;
+            delete item.id;
+            return item;
+        });
+    },
     download(data, filename, type) {
         let url = window.URL.createObjectURL(
             new Blob([data], { type: type })

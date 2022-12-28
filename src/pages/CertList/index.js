@@ -11,20 +11,9 @@ function CertList() {
     const isApprove = state === 'unapproved';
     useEffect(() => {
         // 获取证书列表
-        api.cert.list(state || 'valid')
-            .then(res => {
-                // 扁平化处理
-                res = res.map((item, index) => {
-                    item.requestId = item.request.id;
-                    item.content = `证书主体：${util.transferDN(item.subject)}`;
-                    item = util.flatObj(item);
-                    item.title = `证书${index + 1}`;
-                    item.description = `序列号：${item.serialNumber}，有效期：${new Date(item.notBefore).toLocaleString()} - ${new Date(item.notAfter).toLocaleString()}`;
-                    delete item.id;
-                    return item;
-                });
-                setDataList(res);
-            });
+        api.cert.list(state || 'valid').then(res => {
+            setDataList(util.flatRes(res));
+        });
     }, [state]);
 
     const downloadCert = request => {
@@ -76,7 +65,7 @@ function CertList() {
     };
     const handleAccept = () => {
         api.cert.accept(presentRequest.requestId).then(res => {
-            console.log(res);
+            setDataList(util.flatRes(res));
         });
         setIsDetailOpen(false);
     };
@@ -85,7 +74,7 @@ function CertList() {
         // 否则点击的是右上角x，直接关闭弹窗，不需要发送请求
         if (e.target.tagName !== 'svg') {
             api.cert.reject(presentRequest.requestId).then(res => {
-                console.log(res);
+                setDataList(util.flatRes(res));
             });
         }
         setIsDetailOpen(false);
