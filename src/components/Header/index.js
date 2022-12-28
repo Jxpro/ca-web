@@ -134,6 +134,11 @@ function Header(props) {
             });
             return;
         }
+        // 如果访问了需要登录的页面，点击关闭按钮后跳转到首页
+        if (!userInfo && requireLoginItems.includes(currentNav)) {
+            navigate('/');
+            setCurrentNav(items[0].key);
+        }
         setOpenModal(false);
     };
     // 点击登录按钮
@@ -190,22 +195,28 @@ function Header(props) {
         },
     ];
     // 需要登录的导航项
-    const requireLoginItems = ['list/user', 'certApply', 'list/unapproved'];
+    const requireLoginItems = [items[2].key, items[3].key, items[4].key];
     // 初始选中的导航项，根据当前路由来设置
     let { state: selectedKey } = useParams();
     if (selectedKey) {
         // 如果是list下的路由，则可以直接拼接导航项的key
         selectedKey = 'list/' + selectedKey.toLocaleLowerCase();
+        if (!userInfo && requireLoginItems.includes(selectedKey) && openModal === false) {
+            onClickLogin();
+        }
     } else if (window.location.pathname.split('/')[1]) {
-        // 如果当前路由不是根路径，也不是list子路径，则一定是apply
-        selectedKey = 'apply';
+        // 如果当前路由不是根路径，也不是list子路径，则一定是items[4].key (apply)
+        selectedKey = items[4].key;
+        if (!userInfo && openModal === false) {
+            onClickLogin();
+        }
     } else {
         // 否则就是根路径，选中证书列表
-        selectedKey = 'list/valid';
+        selectedKey = items[0].key;
     }
     // 设置当前选中的导航项
     const [currentNav, setCurrentNav] = useState(selectedKey);
-    // 用于编程式导航的hook
+    // 用于编程式路由的hook
     const navigate = useNavigate();
     //  点击导航项
     const onClickNav = e => {
