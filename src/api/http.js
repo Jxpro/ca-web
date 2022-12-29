@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import axios from 'axios';
 import qs from 'qs';
 
@@ -59,12 +60,19 @@ axios.interceptors.response.use(
                 localStorage.removeItem('token');
                 return Promise.reject(res.code);
             case 403:
+                message.error({
+                    content: '权限不足，请联系管理员',
+                    key: 'message',
+                });
                 return Promise.reject(res.code);
         }
     },
     error => {
         // 断网或服务器错误
-        console.log(error);
+        message.error({
+            content: window.navigator.onLine ? '服务器繁忙，请稍微再试' : '网络错误，请检查网络后再试',
+            key: 'message',
+        });
         return Promise.reject(error);
     }
 );
