@@ -56,6 +56,8 @@ axios.interceptors.response.use(
             case 201:
                 return true;
             case 401:
+                localStorage.removeItem('token');
+                return Promise.reject(res.code);
             case 403:
                 return Promise.reject(res.code);
         }
