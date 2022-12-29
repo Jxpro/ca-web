@@ -8,6 +8,8 @@ import util from '../../util';
 function CertList() {
     let { number, state } = useParams();
     const [dataList, setDataList] = useState([]);
+    const [isDetailOpen, setIsDetailOpen] = useState(false);
+    const [presentRequest, setPresentRequest] = useState({});
     const isApprove = state === 'unapproved';
     useEffect(() => {
         // 获取证书列表
@@ -16,26 +18,6 @@ function CertList() {
         });
     }, [state]);
 
-    const downloadCert = request => {
-        return () => {
-            api.file.downloadCert(request.requestId).then(res => {
-                util.download(res, `${request.commonName}_${request.serialNumber}.crt`, 'application/x-x509-user-cert');
-            });
-        };
-    };
-    const downloadCRL = () => {
-        api.file.downloadCRL().then(res => {
-            util.download(res, `CRL_${new Date().toLocaleDateString()}.crl`, 'application/pkix-crl');
-        });
-    };
-    const downloadLicense = () => {
-        api.file.downloadLicense(presentRequest.contentHash).then(res => {
-            util.download(res, `${presentRequest.originName}`, 'application/pdf');
-        });
-    };
-
-    const [isDetailOpen, setIsDetailOpen] = useState(false);
-    const [presentRequest, setPresentRequest] = useState({});
     const requestDetail = request => {
         return () => {
             setIsDetailOpen(true);
@@ -54,9 +36,35 @@ function CertList() {
                 return <Badge status="error" text="撤销" />;
             case '已过期':
                 return <Badge status="default" text="过期" />;
+            case '待审核':
+                return <Badge status="warning" text="待审" />;
         }
     };
-    const handleOk = () => {
+    const downloadCert = request => {
+        return () => {
+            api.file.downloadCert(request.requestId).then(res => {
+                util.download(res, `${request.commonName}_${request.serialNumber}.crt`, 'application/x-x509-user-cert');
+            });
+        };
+    };
+    const downloadRootCert = () => {
+        return () => {
+            api.file.downloadRootCert().then(res => {
+                util.download(res, 'root.crt', 'application/x-x509-ca-cert');
+            });
+        };
+    };
+    const downloadCRL = () => {
+        api.file.downloadCRL().then(res => {
+            util.download(res, `CRL_${new Date().toLocaleDateString()}.crl`, 'application/pkix-crl');
+        });
+    };
+    const downloadLicense = () => {
+        api.file.downloadLicense(presentRequest.contentHash).then(res => {
+            util.download(res, `${presentRequest.originName}`, 'application/pdf');
+        });
+    };
+    const handleDownload = () => {
         downloadCert(presentRequest)();
         setIsDetailOpen(false);
     };
@@ -70,9 +78,8 @@ function CertList() {
         setIsDetailOpen(false);
     };
     const handleReject = e => {
-        // 如果e.target不是svg标签，说明点击了拒绝按钮，需要发送请求
-        // 否则点击的是右上角x，直接关闭弹窗，不需要发送请求
-        if (e.target.tagName !== 'svg') {
+        // 如果点击的是拒绝按钮，则调用接口 (antd自动将拒绝之间加了一个空格)
+        if (e.target.innerText === '拒 绝') {
             api.cert.reject(presentRequest.requestId).then(res => {
                 setDataList(util.flatRes(res));
             });
@@ -86,24 +93,21 @@ function CertList() {
                 itemLayout="vertical"
                 size="large"
                 pagination={{
-                    defaultCurrent: parseInt(number) || 1,
+                    // +number: 将字符串转为数字
+                    defaultCurrent: +number || 1,
                     pageSize: 3,
                     showQuickJumper: true,
                     showTotal: total =>
                         <>
                             共 {total} 条记录
-                            {state === 'revoke'
-                                && <>
-                                    &nbsp;&nbsp;&nbsp;
-                                    <Button type="primary"
-                                        shape="round"
-                                        icon={<DownloadOutlined />}
-                                        size={'small'}
-                                        onClick={downloadCRL}>
-                                        下载CRL
-                                    </Button>
-                                </>
-                            }
+                            &nbsp;&nbsp;&nbsp;
+                            <Button type="primary"
+                                shape="round"
+                                icon={<DownloadOutlined />}
+                                size={'small'}
+                                onClick={state === 'revoke' ? downloadCRL : downloadRootCert}>
+                                {state === 'revoke' ? '下载CRL' : '下载根证书'}
+                            </Button>
                         </>
                     ,
                 }}
@@ -144,31 +148,26 @@ function CertList() {
                 open={isDetailOpen}
                 okText={isApprove ? '通过' : '下载'}
                 cancelText={isApprove ? '拒绝' : '关闭'}
-                onOk={isApprove ? handleAccept : handleOk}
+                onOk={isApprove ? handleAccept : handleDownload}
                 onCancel={isApprove ? handleReject : handleCancel}>
                 <Descriptions title="证书详情" layout="vertical" size="small" bordered>
                     <Descriptions.Item label="序列号">{presentRequest.serialNumber}</Descriptions.Item>
                     <Descriptions.Item label="有效期" span={2}>
-                        {`${new Date(presentRequest.notBefore).toLocaleString()} 至 ${new Date(presentRequest.notAfter).toLocaleString()}`}
+                        {presentRequest.notBefore && `${new Date(presentRequest.notBefore).toLocaleString()} 至 ${new Date(presentRequest.notAfter).toLocaleString()}`}
                     </Descriptions.Item>
                     <Descriptions.Item label="姓名">{presentRequest.commonName}</Descriptions.Item>
-                    <Descriptions.Item label="组织">{presentRequest.organization}</Descriptions.Item>
-                    <Descriptions.Item label="部门">{presentRequest.organizationalUnit}</Descriptions.Item>
-                    <Descriptions.Item label="国家">{presentRequest.countryName}</Descriptions.Item>
-                    <Descriptions.Item label="省份">{presentRequest.provinceName}</Descriptions.Item>
-                    <Descriptions.Item label="邮箱">{presentRequest.email}</Descriptions.Item>
-                    <Descriptions.Item label="营业执照">
-                        <a href={'./'} onClick={e => { e.preventDefault(); downloadLicense(); }}>{presentRequest.contentHash}.pdf</a>
+                    <Descriptions.Item label="组织">{presentRequest.organization || '暂无'}</Descriptions.Item>
+                    <Descriptions.Item label="部门">{presentRequest.organizationalUnit || '暂无'}</Descriptions.Item>
+                    <Descriptions.Item label="国家">{presentRequest.countryName || '暂无'}</Descriptions.Item>
+                    <Descriptions.Item label="省份">{presentRequest.provinceName || '暂无'}</Descriptions.Item>
+                    <Descriptions.Item label="邮箱">{presentRequest.email || '暂无'}</Descriptions.Item>
+                    <Descriptions.Item label="营业执照" span={2}>
+                        {presentRequest.contentHash ? <a href={'./'} onClick={e => { e.preventDefault(); downloadLicense(); }}>{presentRequest.contentHash}.pdf</a> : '未上传'}
                     </Descriptions.Item>
                     <Descriptions.Item label="公钥算法">{presentRequest.algorithm}</Descriptions.Item>
-                    <Descriptions.Item label={presentRequest.algorithm === 'RSA' ? '密钥长度' : '曲线参数'}>
-                        {presentRequest.algorithm === 'RSA' ? presentRequest.keySize : presentRequest.curveName}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="参数1">{presentRequest.param1 && util.getShortName(presentRequest.param1)}</Descriptions.Item>
-                    <Descriptions.Item label="参数2">{presentRequest.param2 && util.getShortName(presentRequest.param2)}</Descriptions.Item>
-                    <Descriptions.Item label="Status">
-                        {switchState(presentRequest)}
-                    </Descriptions.Item>
+                    <Descriptions.Item label="参数1">{presentRequest.param1 && util.getShortString(presentRequest.param1)}</Descriptions.Item>
+                    <Descriptions.Item label="参数2">{presentRequest.param2 && util.getShortString(presentRequest.param2)}</Descriptions.Item>
+                    <Descriptions.Item label="Status"> {switchState(presentRequest)} </Descriptions.Item>
                 </Descriptions>
             </Modal>
         </>
