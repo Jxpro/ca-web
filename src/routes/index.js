@@ -11,6 +11,7 @@ import CertApply from '../pages/CertApply';
 import Subject from '../pages/CertApply/Subject';
 import License from '../pages/CertApply/License';
 import PubKey from '../pages/CertApply/PubKey';
+import AuthRoute from '../components/AuthRoute';
 
 const router = createBrowserRouter([
     {
@@ -35,25 +36,46 @@ const router = createBrowserRouter([
                 path: 'register',
                 element: <Register />,
             },
-            // 证书列表，不带页码，默认为第一页
-            // state 为证书状态，可选值为：
-            // 1. valid(已通过)
-            // 2. revoke(已撤销)
-            // 3. unapproved(待审核)
-            // 4. user(用户所属)
+            // 公开证书列表，不带页码，默认为第一页
             {
-                path: 'list/:state',
+                path: 'list/valid',
+                element: <CertList />,
+            },
+            {
+                path: 'list/revoke',
                 element: <CertList />,
             },
             // 证书列表，带页码
             {
-                path: 'list/:state/:number',
+                path: 'list/valid/:number',
                 element: <CertList />,
+            },
+            {
+                path: 'list/revoke/:number',
+                element: <CertList />,
+            },
+            // 私有证书列表，不带页码，默认为第一页
+            {
+                path: 'list/user',
+                element: <AuthRoute ><CertList /></AuthRoute>,
+            },
+            {
+                path: 'list/unapproved',
+                element: <AuthRoute requireAdmin={true}><CertList /></AuthRoute>,
+            },
+            // 证书列表，带页码
+            {
+                path: 'list/user/:number',
+                element: <AuthRoute ><CertList /></AuthRoute>,
+            },
+            {
+                path: 'list/unapproved/:number',
+                element: <AuthRoute requireAdmin={true}><CertList /></AuthRoute>,
             },
             // 证书申请
             {
                 path: 'apply',
-                element: <CertApply />,
+                element: <AuthRoute ><CertApply /></AuthRoute>,
                 children: [
                     // 默认重定向到第一步
                     {

@@ -6,17 +6,18 @@ import api from '../../api';
 import util from '../../util';
 
 function CertList() {
-    let { number, state } = useParams();
+    let { number } = useParams();
     const [dataList, setDataList] = useState([]);
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [presentRequest, setPresentRequest] = useState({});
-    const isApprove = state === 'unapproved';
+    const listState = window.location.pathname.split('/')[2];
+    const isApprove = listState === 'unapproved';
     useEffect(() => {
         // 获取证书列表
-        api.cert.list(state || 'valid').then(res => {
+        api.cert.list(listState || 'valid').then(res => {
             setDataList(util.flatRes(res));
         });
-    }, [state]);
+    }, [listState]);
 
     const requestDetail = request => {
         return () => {
@@ -25,11 +26,11 @@ function CertList() {
         };
     };
     const switchState = request => {
-        let state = request.state;
-        if (state === '已通过' && new Date(request.notAfter).getTime() < new Date().getTime()) {
-            state = '已过期';
+        let requestState = request.state;
+        if (requestState === '已通过' && new Date(request.notAfter).getTime() < new Date().getTime()) {
+            requestState = '已过期';
         }
-        switch (state) {
+        switch (requestState) {
             case '已通过':
                 return <Badge status="processing" text="有效" />;
             case '已撤销':
@@ -105,8 +106,8 @@ function CertList() {
                                 shape="round"
                                 icon={<DownloadOutlined />}
                                 size={'small'}
-                                onClick={state === 'revoke' ? downloadCRL : downloadRootCert}>
-                                {state === 'revoke' ? '下载CRL' : '下载根证书'}
+                                onClick={listState === 'revoke' ? downloadCRL : downloadRootCert}>
+                                {listState === 'revoke' ? '下载CRL' : '下载根证书'}
                             </Button>
                         </>
                     ,

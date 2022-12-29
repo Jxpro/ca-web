@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Button, Layout, Menu, message } from 'antd';
 import { CheckCircleOutlined, WarningOutlined, SafetyCertificateOutlined, FormOutlined, EyeOutlined, FileProtectOutlined, QuestionCircleOutlined, UserOutlined } from '@ant-design/icons';
 
@@ -11,6 +11,7 @@ import './index.css';
 
 function Header(props) {
     const navigate = useNavigate();
+    const { state, pathname } = useLocation();
     const [isLogin, setIsLogin] = useState(false);
     const [isRegister, setIsRegister] = useState(false);
     const [userInfo, setUerInfo] = useState(undefined);
@@ -24,7 +25,15 @@ function Header(props) {
             // 如果token不存在，则直接显示页面
             !token && props.over();
         }
-    }, [props, userInfo, token]);
+        if (state?.errorMsg) {
+            message.error({
+                content: state.errorMsg,
+                key: messageKey,
+            });
+            // 清除错误信息，避免下次进入时还显示错误信息
+            navigate(pathname, { state: { errorMsg: '', from: state.from }, replace: true });
+        }
+    }, [navigate, props, userInfo, token, state, pathname]);
 
     // 导航项
     // 将true or false改为字符串形式，否则react会警告：Received `true` for a non-boolean attribute `show`.
@@ -122,6 +131,10 @@ function Header(props) {
             content: '退出成功',
             key: messageKey,
         });
+        if (requireLoginItems.includes(currentNav)) {
+            navigate('/');
+            setCurrentNav(items[0].key);
+        }
     };
     return (
         <Layout.Header className="header">
