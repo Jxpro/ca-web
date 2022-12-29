@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Button, Layout, Menu, message } from 'antd';
 import { CheckCircleOutlined, WarningOutlined, SafetyCertificateOutlined, FormOutlined, EyeOutlined, FileProtectOutlined, QuestionCircleOutlined, UserOutlined } from '@ant-design/icons';
@@ -15,29 +15,13 @@ function Header(props) {
     const [isLogin, setIsLogin] = useState(false);
     const [isRegister, setIsRegister] = useState(false);
     const [userInfo, setUerInfo] = useState(undefined);
+    const [currentNav, setCurrentNav] = useState(undefined);
     const token = localStorage.getItem('token');
     const messageKey = 'message';
 
-    useEffect(() => {
-        if (!userInfo) {
-            // 如果token存在，则获取用户信息，如果token过期，则清除token，最后显示页面
-            token && api.user.info().then(res => setUerInfo(res)).finally(() => props.over());
-            // 如果token不存在，则直接显示页面
-            !token && props.over();
-        }
-        if (state?.errorMsg) {
-            message.error({
-                content: state.errorMsg,
-                key: messageKey,
-            });
-            // 清除错误信息，避免下次进入时还显示错误信息
-            navigate(pathname, { state: { errorMsg: '', from: state.from }, replace: true });
-        }
-    }, [navigate, props, userInfo, token, state, pathname]);
-
     // 导航项
     // 将true or false改为字符串形式，否则react会警告：Received `true` for a non-boolean attribute `show`.
-    const items = [
+    const items = useMemo(() => [
         {
             label: '证书列表',
             key: 'list/valid',
@@ -74,23 +58,40 @@ function Header(props) {
             icon: <QuestionCircleOutlined />,
             show: 'true',
         },
-    ];
+    ], [userInfo]);
     // 需要登录的导航项
     const requireLoginItems = [items[2].key, items[3].key, items[4].key];
     // 初始选中的导航项，根据当前路由来设置
-    let { state: selectedKey } = useParams();
-    if (selectedKey) {
-        // 如果是list下的路由，则可以直接拼接导航项的key
-        selectedKey = 'list/' + selectedKey.toLocaleLowerCase();
-    } else if (window.location.pathname.split('/')[1]) {
-        // 如果当前路由不是根路径，也不是list子路径，则一定是items[4].key (apply)
-        selectedKey = items[4].key;
-    } else {
-        // 否则就是根路径，选中证书列表
-        selectedKey = items[0].key;
-    }
-    // 设置当前选中的导航项
-    const [currentNav, setCurrentNav] = useState(selectedKey);
+    const prefix = window.location.pathname.split('/')[1];
+    const certState = window.location.pathname.split('/')[2];
+
+    useEffect(() => {
+        if (!userInfo) {
+            // 如果token存在，则获取用户信息，如果token过期，则清除token，最后显示页面
+            token && api.user.info().then(res => setUerInfo(res)).finally(() => props.over());
+            // 如果token不存在，则直接显示页面
+            !token && props.over();
+        }
+        if (state?.errorMsg) {
+            message.error({
+                content: state.errorMsg,
+                key: messageKey,
+            });
+            // 清除错误信息，避免下次进入时还显示错误信息
+            navigate(pathname, { state: { errorMsg: '', from: state.from }, replace: true });
+        }
+        if (prefix === 'list' && certState) {
+            // 如果是list下的路由，则可以直接拼接导航项的key
+            setCurrentNav('list/' + certState.toLocaleLowerCase());
+        } else if (prefix) {
+            // 如果当前路由不是根路径，也不是list子路径，则一定是items[4].key (apply)
+            setCurrentNav(items[3].key);
+        } else {
+            // 否则就是根路径，选中证书列表
+            setCurrentNav(items[0].key);
+        }
+    }, [navigate, props, userInfo, token, state, pathname, prefix, certState, items]);
+
     //  点击导航项
     const onClickNav = e => {
         // 点击联系我们时不处理路由
