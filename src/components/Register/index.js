@@ -34,7 +34,7 @@ function Register(props) {
     // 切换注册窗口
     const onSwitchLogin = () => {
         props.cancle ? props.cancle(true)
-            : navigate(from, {
+            : navigate('/login', {
                 replace: true,
                 state: { from },
             });
@@ -51,7 +51,7 @@ function Register(props) {
         }
         // 如果有关闭弹窗的回调函数，则执行
         // 如果没有回调函数，则跳转到来源页面
-        props.cancle ? props.cancle(false) : navigate(from);
+        props.cancle ? props.cancle(false) : navigate('/');
     };
 
     return (
