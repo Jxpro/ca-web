@@ -4,6 +4,8 @@ import {
 
 import App from '../App';
 import Error from './error';
+import Login from '../components/Login';
+import Register from '../components/Register';
 import CertList from '../pages/CertList';
 import CertApply from '../pages/CertApply';
 import Subject from '../pages/CertApply/Subject';
@@ -22,6 +24,16 @@ const router = createBrowserRouter([
                 // path: '',
                 index: true,
                 element: <CertList />,
+            },
+            // 登录弹窗
+            {
+                path: 'login',
+                element: <Login />,
+            },
+            // 注册弹窗
+            {
+                path: 'register',
+                element: <Register />,
             },
             // 证书列表，不带页码，默认为第一页
             // state 为证书状态，可选值为：
