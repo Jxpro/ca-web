@@ -4,8 +4,8 @@ import {
 
 import App from '../App';
 import Error from './error';
-import Login from '../components/Login';
-import Register from '../components/Register';
+import Login from '../pages/Login';
+import Register from '../pages/Register';
 import CertList from '../pages/CertList';
 import CertApply from '../pages/CertApply';
 import Subject from '../pages/CertApply/Subject';

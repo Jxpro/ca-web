@@ -5,8 +5,8 @@ import { CheckCircleOutlined, WarningOutlined, SafetyCertificateOutlined, FormOu
 
 import api from '../../api';
 import util from '../../util';
-import Login from '../Login';
-import Register from '../Register';
+import Login from '../../pages/Login';
+import Register from '../../pages/Register';
 import './index.css';
 
 function Header(props) {
