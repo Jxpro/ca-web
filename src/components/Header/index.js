@@ -15,10 +15,34 @@ function Header(props) {
     const [isLogin, setIsLogin] = useState(false);
     const [isRegister, setIsRegister] = useState(false);
     const [userInfo, setUerInfo] = useState(undefined);
-    const [currentNav, setCurrentNav] = useState(undefined);
     const token = localStorage.getItem('token');
     const messageKey = 'message';
 
+    // 发送用户请求
+    useEffect(() => {
+        if (!userInfo) {
+            // 如果token存在，则获取用户信息，如果token过期，则清除token，最后显示页面
+            token && api.user.info().then(res => setUerInfo(res)).finally(() => props.over());
+            // 如果token不存在，则直接显示页面
+            !token && props.over();
+        }
+    }, [props, userInfo, token]);
+
+    // 显示错误消息
+    useEffect(() => {
+        if (state?.errorMsg) {
+            message.error({
+                content: state.errorMsg,
+                key: messageKey,
+            });
+            // 清除错误信息，避免下次进入时还显示错误信息
+            navigate(pathname, { state: { errorMsg: '', from: state.from }, replace: true });
+        }
+    }, [navigate, state, pathname]);
+
+    // 初始选中的导航项，根据当前路由来设置
+    const prefix = pathname.split('/')[1];
+    const certState = pathname.split('/')[2];
     // 导航项
     // 将true or false改为字符串形式，否则react会警告：Received `true` for a non-boolean attribute `show`.
     const items = useMemo(() => [
@@ -60,37 +84,20 @@ function Header(props) {
         },
     ], [userInfo]);
     // 需要登录的导航项
-    const requireLoginItems = [items[2].key, items[3].key, items[4].key];
-    // 初始选中的导航项，根据当前路由来设置
-    const prefix = window.location.pathname.split('/')[1];
-    const certState = window.location.pathname.split('/')[2];
-
-    useEffect(() => {
-        if (!userInfo) {
-            // 如果token存在，则获取用户信息，如果token过期，则清除token，最后显示页面
-            token && api.user.info().then(res => setUerInfo(res)).finally(() => props.over());
-            // 如果token不存在，则直接显示页面
-            !token && props.over();
-        }
-        if (state?.errorMsg) {
-            message.error({
-                content: state.errorMsg,
-                key: messageKey,
-            });
-            // 清除错误信息，避免下次进入时还显示错误信息
-            navigate(pathname, { state: { errorMsg: '', from: state.from }, replace: true });
-        }
+    const requireLoginItems = useMemo(() => [items[2].key, items[3].key, items[4].key], [items]);
+    // 选择导航栏
+    const currentNav = useMemo(() => {
         if (prefix === 'list' && certState) {
             // 如果是list下的路由，则可以直接拼接导航项的key
-            setCurrentNav('list/' + certState.toLocaleLowerCase());
+            return 'list/' + certState.toLocaleLowerCase();
         } else if (prefix) {
-            // 如果当前路由不是根路径，也不是list子路径，则一定是items[4].key (apply)
-            setCurrentNav(items[3].key);
+            // 如果当前路由不是根路径，也不是list子路径，则一定是apply或login/register，直接赋值即可
+            return prefix;
         } else {
             // 否则就是根路径，选中证书列表
-            setCurrentNav(items[0].key);
+            return items[0].key;
         }
-    }, [navigate, props, userInfo, token, state, pathname, prefix, certState, items]);
+    }, [prefix, certState, items]);
 
     //  点击导航项
     const onClickNav = e => {
@@ -107,7 +114,6 @@ function Header(props) {
         // 如果点击的是不需要登录的导航项，或者用户已登录，则跳转到对应页面
         if (!requireLoginItems.includes(e.key) || userInfo) {
             navigate(`/${e.key}`);
-            setCurrentNav(e.key);
         }
     };
     // 取消登录的回调，toRegister为true时，取消登录后显示注册窗口
@@ -134,9 +140,9 @@ function Header(props) {
         });
         if (requireLoginItems.includes(currentNav)) {
             navigate('/');
-            setCurrentNav(items[0].key);
         }
     };
+
     return (
         <Layout.Header className="header">
             <div className="logo">
