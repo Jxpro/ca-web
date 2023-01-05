@@ -19,11 +19,20 @@ export default {
         return shortName;
     },
     transferDN(subject) {
-        return 'CN=' + subject.commonName
-            + ',O=' + subject.organization
-            + ',OU=' + subject.organizationalUnit
-            + ',C=' + subject.countryName
-            + ',ST=' + subject.provinceName;
+        let result = 'CN=' + subject.commonName;
+        if (subject.organization) {
+            result += ',O=' + subject.organization;
+        }
+        if (subject.organizationalUnit) {
+            result += ',OU=' + subject.organizationalUnit;
+        }
+        if (subject.country) {
+            result += ',C=' + subject.country;
+        }
+        if (subject.stateOrProvinceName) {
+            result += ',ST=' + subject.stateOrProvinceName;
+        }
+        return result;
     },
     flatObj(obj) {
         let result = {};
