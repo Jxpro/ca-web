@@ -1,24 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { FilePdfOutlined, KeyOutlined, ProfileOutlined } from '@ant-design/icons';
 import { Steps } from 'antd';
 
 function Step() {
-    let stepName = window.location.pathname.split('/')[2];
-    let current = 0;
-    switch (stepName) {
-        case 'subject':
-            current = 0;
-            break;
-        case 'pubkey':
-            current = 1;
-            break;
-        case 'license':
-            current = 2;
-            break;
-        default:
-            current = 0;
-            break;
-    }
+    const stepName = window.location.pathname.split('/')[2];
+    const current = useMemo(() => ({ subject: 0, pubkey: 1, license: 2 }[stepName]), [stepName]);
     return (
         <Steps
             style={{
