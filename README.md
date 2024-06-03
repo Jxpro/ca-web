@@ -132,4 +132,4 @@ ECC需选择推荐安全的曲线参数，这里提供三种选择：secp256k1�
 
 ## 联系方式
 
-如果有任何问题，欢迎到 [github issue](https://github.com/Jxpro/damai-tickets/issues) 进行讨论，或发送电子邮件到 [jxpro@qq.com](mailto:jxpro@qq.com) 来联系我
+如果有任何问题，欢迎到 [github issue](https://github.com/Jxpro/ca-web/issues) 进行讨论，或发送电子邮件到 [jxpro@qq.com](mailto:jxpro@qq.com) 来联系我
