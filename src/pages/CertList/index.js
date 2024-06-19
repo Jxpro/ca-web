@@ -49,11 +49,9 @@ function CertList() {
         };
     };
     const downloadRootCert = () => {
-        return () => {
-            api.file.downloadRootCert().then(res => {
-                util.download(res, 'root.crt', 'application/x-x509-ca-cert');
-            });
-        };
+        api.file.downloadRootCert().then(res => {
+            util.download(res, 'root.crt', 'application/x-x509-ca-cert');
+        });
     };
     const downloadCRL = () => {
         api.file.downloadCRL().then(res => {
