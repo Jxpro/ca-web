@@ -9,7 +9,6 @@ import Register from '../pages/Register';
 import CertList from '../pages/CertList';
 import CertApply from '../pages/CertApply';
 import Subject from '../pages/CertApply/Subject';
-import License from '../pages/CertApply/License';
 import PubKey from '../pages/CertApply/PubKey';
 import AuthRoute from '../components/AuthRoute';
 
@@ -91,11 +90,6 @@ const router = createBrowserRouter([
                     {
                         path: 'pubkey',
                         element: <PubKey />,
-                    },
-                    // 证书申请，第三步，填写营业执照
-                    {
-                        path: 'license',
-                        element: <License />,
                     },
                 ],
             },

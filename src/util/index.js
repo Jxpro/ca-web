@@ -1,5 +1,5 @@
 export default {
-    getShortString(name) {
+    getShortString(name, length = 6) {
         let shortName = '';
         let count = 0;
         for (let i = 0; i < name.length; i++) {
@@ -8,12 +8,12 @@ export default {
             } else {
                 count += 1;
             }
-            if (count > 6) {
+            if (count > length) {
                 break;
             }
             shortName += name[i];
         }
-        if (count > 6) {
+        if (count > length) {
             shortName += '...';
         }
         return shortName;

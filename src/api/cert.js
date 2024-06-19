@@ -15,9 +15,6 @@ export default {
     applyPubKey(pubKey) {
         return http.post(`${api_prefix}/apply/publicKey`, pubKey);
     },
-    applyLicense(license) {
-        return http.post(`${api_prefix}/apply/license`, license);
-    },
     accept(requestId) {
         return http.post(`${api_prefix}/approve`, { id: requestId, passed: true });
     },

@@ -152,7 +152,7 @@ function CertList() {
                 onOk={isApprove ? handleAccept : handleDownload}
                 onCancel={isApprove ? handleReject : handleCancel}>
                 <Descriptions title="证书详情" layout="vertical" size="small" bordered>
-                    <Descriptions.Item label="序列号">{presentRequest.serialNumber}</Descriptions.Item>
+                    <Descriptions.Item label="序列号">{presentRequest.serialNumber && util.getShortString(`${presentRequest.serialNumber}`, 10)}</Descriptions.Item>
                     <Descriptions.Item label="有效期" span={2}>
                         {presentRequest.notBefore && `${new Date(presentRequest.notBefore).toLocaleString()} 至 ${new Date(presentRequest.notAfter).toLocaleString()}`}
                     </Descriptions.Item>
@@ -162,12 +162,9 @@ function CertList() {
                     <Descriptions.Item label="国家">{presentRequest.country || '暂无'}</Descriptions.Item>
                     <Descriptions.Item label="省份">{presentRequest.stateOrProvinceName || '暂无'}</Descriptions.Item>
                     <Descriptions.Item label="邮箱">{presentRequest.email || '暂无'}</Descriptions.Item>
-                    <Descriptions.Item label="营业执照" span={2}>
-                        {presentRequest.contentHash ? <a href={'./'} onClick={e => { e.preventDefault(); downloadLicense(); }}>{presentRequest.contentHash}.pdf</a> : '未上传'}
-                    </Descriptions.Item>
                     <Descriptions.Item label="公钥算法">{presentRequest.algorithm}</Descriptions.Item>
-                    <Descriptions.Item label="参数1">{presentRequest.param1 && util.getShortString(presentRequest.param1)}</Descriptions.Item>
-                    <Descriptions.Item label="参数2">{presentRequest.param2 && util.getShortString(presentRequest.param2)}</Descriptions.Item>
+                    <Descriptions.Item label="参数1">{presentRequest.param1 && util.getShortString(presentRequest.param1, 10)}</Descriptions.Item>
+                    <Descriptions.Item label="参数2">{presentRequest.param2 && util.getShortString(presentRequest.param2, 20)}</Descriptions.Item>
                     <Descriptions.Item label="Status"> {switchState(presentRequest)} </Descriptions.Item>
                 </Descriptions>
             </Modal>

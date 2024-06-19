@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { FilePdfOutlined, KeyOutlined, ProfileOutlined } from '@ant-design/icons';
+import { KeyOutlined, ProfileOutlined } from '@ant-design/icons';
 import { Steps } from 'antd';
 
 function Step() {
@@ -19,10 +19,6 @@ function Step() {
                 {
                     title: 'Public Key',
                     icon: <KeyOutlined />,
-                },
-                {
-                    title: 'License',
-                    icon: <FilePdfOutlined />,
                 },
             ]}
         />

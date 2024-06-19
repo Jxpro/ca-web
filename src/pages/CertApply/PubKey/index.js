@@ -8,7 +8,7 @@ function PubKey() {
     const onFinish = values => {
         api.cert.applyPubKey(values).then(() => {
             message.success('提交成功');
-            navigate('/apply/license');
+            navigate('/');
         });
     };
     return (
