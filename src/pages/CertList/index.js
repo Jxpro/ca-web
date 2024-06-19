@@ -39,6 +39,8 @@ function CertList() {
                 return <Badge status="default" text="过期" />;
             case '待审核':
                 return <Badge status="warning" text="待审" />;
+            case '未通过':
+                return <Badge status="error" text="拒绝" />;
         }
     };
     const downloadCert = request => {
