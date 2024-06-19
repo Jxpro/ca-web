@@ -33,7 +33,7 @@ function Subject() {
             </Form.Item>
             <Form.Item label="组织" name="organization"><Input /></Form.Item>
             <Form.Item label="部门" name="organizationalUnit"><Input /></Form.Item>
-            <Form.Item label="国家" name="contry"><Input /></Form.Item>
+            <Form.Item label="国家" name="country"><Input /></Form.Item>
             <Form.Item label="省份/州" name="stateOrProvinceName"><Input /></Form.Item>
             <Form.Item label="邮箱" name="email"><Input /></Form.Item>
             <Form.Item>

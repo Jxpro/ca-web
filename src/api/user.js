@@ -17,7 +17,7 @@ export default {
         delete data.confirm;
         return http.post(api_prefix + '/register', {
             ...data,
-            authority: 0,
+            role: 'user',
             password: sha256(data.password),
         });
     },

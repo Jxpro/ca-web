@@ -159,8 +159,8 @@ function CertList() {
                     <Descriptions.Item label="姓名">{presentRequest.commonName}</Descriptions.Item>
                     <Descriptions.Item label="组织">{presentRequest.organization || '暂无'}</Descriptions.Item>
                     <Descriptions.Item label="部门">{presentRequest.organizationalUnit || '暂无'}</Descriptions.Item>
-                    <Descriptions.Item label="国家">{presentRequest.countryName || '暂无'}</Descriptions.Item>
-                    <Descriptions.Item label="省份">{presentRequest.provinceName || '暂无'}</Descriptions.Item>
+                    <Descriptions.Item label="国家">{presentRequest.country || '暂无'}</Descriptions.Item>
+                    <Descriptions.Item label="省份">{presentRequest.stateOrProvinceName || '暂无'}</Descriptions.Item>
                     <Descriptions.Item label="邮箱">{presentRequest.email || '暂无'}</Descriptions.Item>
                     <Descriptions.Item label="营业执照" span={2}>
                         {presentRequest.contentHash ? <a href={'./'} onClick={e => { e.preventDefault(); downloadLicense(); }}>{presentRequest.contentHash}.pdf</a> : '未上传'}
